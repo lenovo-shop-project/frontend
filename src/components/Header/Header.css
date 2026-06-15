@@ -23,13 +23,7 @@
   cursor: pointer;
 }
 
-.header-menu button {
-  background: white;
-  border: 1px solid #d5d5d5;
-  padding: 13px 22px;
-  font-size: 16px;
-  cursor: pointer;
-}
+
 
 .header-actions {
   display: flex;
@@ -42,8 +36,9 @@
   border: none;
   background: transparent;
   color: black;
-  font-size: 16px;
   cursor: pointer;
+  z-index: 5000;
+  position: relative;
 }
 
 .icon-button svg {
@@ -53,5 +48,142 @@
 .buyer-button:hover,
 .icon-button:hover,
 .language-button:hover {
+  color: #e2231a;
+}
+.buyer-menu-wrapper {
+  position: relative;
+}
+
+.buyer-menu-wrapper {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  height: 70px;
+}
+
+
+.buyer-dropdown {
+  position: absolute;
+
+  top: 55px;
+  left: 0;
+
+  width: 245px;
+
+  background: white;
+
+  display: none;
+
+  padding: 10px 0;
+
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+
+  z-index: 3000;
+}
+
+
+.buyer-menu-wrapper:hover .buyer-dropdown {
+  display: block;
+}
+
+
+.buyer-menu-wrapper:hover .buyer-button {
+  color: #e2231a;
+}
+
+
+.buyer-dropdown div {
+  padding: 12px 22px;
+
+  font-size: 17px;
+  color: #15191f;
+
+  cursor: pointer;
+}
+
+
+.buyer-dropdown div:hover {
+  color: #e2231a;
+}
+.header-menu a:hover {
+  color: #e2231a;
+}
+
+.nav-dropdown-wrapper {
+  position: relative;
+  height: 70px;
+
+  display: flex;
+  align-items: center;
+}
+
+.nav-dropdown-button {
+  border: none;
+  background: transparent;
+
+  font-size: 16px;
+  color: black;
+
+  cursor: pointer;
+}
+
+.nav-dropdown-wrapper:hover .nav-dropdown-button {
+  color: #e2231a;
+}
+
+.nav-dropdown {
+  position: absolute;
+  top: 58px;
+  left: 0;
+
+  background: white;
+  display: none;
+
+  padding: 10px 0;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+
+  z-index: 4000;
+}
+
+.nav-dropdown-wrapper:hover .nav-dropdown {
+  display: block;
+}
+
+.nav-dropdown div {
+  padding: 10px 20px;
+
+  font-size: 17px;
+  color: #15191f;
+
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.nav-dropdown div:hover {
+  color: #e2231a;
+}
+
+.accessories-dropdown {
+  width: 470px;
+}
+
+.products-dropdown {
+  width: 230px;
+}
+
+.portal-button {
+  background: white;
+  border: 1px solid #d5d5d5;
+
+  padding: 13px 22px;
+
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.portal-button:hover {
   color: #e2231a;
 }
