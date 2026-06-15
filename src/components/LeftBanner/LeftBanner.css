@@ -1,0 +1,41 @@
+.left-banner {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 65px;
+  height: 100vh;
+  background-color: #e2231a;
+  z-index: 9999;
+}
+
+.left-banner span {
+  color: white;
+  font-size: 27px;
+  font-weight: 700;
+  text-decoration-style: dotted;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  position: absolute;
+  top: 45px;
+  left: 18px;
+}
+
+.phone-button {
+  position: fixed;
+  left: 98px;
+  bottom: 15px;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: none;
+  background-color: red;
+  color: white;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.phone-button svg {
+  font-size: 32px;
+}

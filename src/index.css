@@ -1,0 +1,10 @@
+.header-top {
+  position: relative;
+}
+
+.header-right {
+  position: absolute;
+  top: 15px;
+  right: 120px;
+  z-index: 2000;
+}
