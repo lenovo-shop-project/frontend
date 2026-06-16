@@ -1,0 +1,58 @@
+.main-search {
+
+    width: 850px;
+    height: 55px;
+
+    display: flex;
+
+    margin: 35px auto;
+
+    background: white;
+
+}
+
+
+.main-search input {
+
+    flex: 1;
+
+    padding-left: 25px;
+
+    font-size: 18px;
+
+    border: 1px solid #d6d6d6;
+
+    outline: none;
+
+}
+
+
+
+.main-search button {
+
+    width: 65px;
+
+    background: black;
+
+    color:white;
+
+    border:none;
+
+    cursor:pointer;
+
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+
+
+.main-search button:hover {
+
+    background:#e2231a;
+
+}
