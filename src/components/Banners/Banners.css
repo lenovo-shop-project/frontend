@@ -1,0 +1,96 @@
+.banners-section {
+    padding: 0 170px 60px;
+}
+
+.banners-section h2 {
+    font-size: 26px;
+    font-weight: 400;
+    margin: 0 0 25px;
+    color: #15191f;
+}
+
+.banner-slider {
+    position: relative;
+    width: 100%;
+    height: 340px;
+    overflow: hidden;
+    border-radius: 6px;
+    background-color: #eeeeee;
+}
+
+.slider-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.8s ease-in-out;
+}
+
+.slider-track img {
+    min-width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.banner-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 44px;
+    height: 44px;
+
+    border: none;
+    border-radius: 6px;
+
+    background: white;
+    color: #15191f;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    z-index: 10;
+}
+
+.banner-arrow.left {
+    left: 12px;
+}
+
+.banner-arrow.right {
+    right: 12px;
+}
+
+.banner-arrow svg {
+    font-size: 34px;
+}
+
+.banner-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 20px 0 45px;
+}
+
+.banner-dots button {
+    width: 8px;
+    height: 8px;
+
+    padding: 0;
+
+    border: 1px solid #15191f;
+    border-radius: 50%;
+
+    background: transparent;
+
+    cursor: pointer;
+}
+
+.banner-dots button.active {
+    background: #15191f;
+}
+
+.bottom-banner {
+    margin-top: 15px;
+}
