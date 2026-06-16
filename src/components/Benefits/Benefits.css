@@ -1,0 +1,105 @@
+.benefits {
+  width: 100%;
+  background: #eeeeee;
+  padding: 70px 0;
+}
+
+.benefits h2 {
+  font-size: 26px;
+  font-weight: 600;
+  margin: 0 0 25px;
+  color: #15191f;
+}
+
+.benefits-small {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.benefit-small-card {
+  height: 150px;
+  background: white;
+  border-radius: 5px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 18px;
+  text-align: center;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.benefit-small-card h4 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  color: #15191f;
+}
+
+.benefit-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+}
+
+.benefit-icon svg {
+  font-size: 25px;
+}
+
+.green {
+  background: #24a05a;
+}
+
+.orange {
+  background: #ff7900;
+}
+
+.red {
+  background: #e2231a;
+}
+
+.gold {
+  background: #d6b32b;
+}
+
+.blue {
+  background: #0084d6;
+}
+
+.purple {
+  background: #6b00c9;
+}
+
+.yellow {
+  background: #f2b400;
+}
+
+.details-btn {
+  display: block;
+
+  margin: 32px auto 0;
+  padding: 15px 48px;
+
+  background: white;
+  border: 1px solid #15191f;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.details-btn:hover {
+  color: #e2231a;
+  border-color: #e2231a;
+}

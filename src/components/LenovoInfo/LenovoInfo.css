@@ -1,0 +1,97 @@
+.lenovo-info {
+  width: 100%;
+  background: #eeeeee;
+  padding: 20px 0 70px;
+}
+
+.lenovo-info-card {
+  width: 100%;
+  background: white;
+  border-radius: 6px;
+  padding: 35px 45px;
+  box-sizing: border-box;
+}
+
+
+.lenovo-info-card h2 {
+
+    font-size: 30px;
+
+    font-weight: 500;
+
+    color: #111;
+
+    margin-bottom: 30px;
+
+}
+
+
+
+.lenovo-info-card h3 {
+
+    font-size: 22px;
+
+    font-weight: 600;
+
+    color: #444343;
+
+    margin-top: 36px;
+    margin-bottom: 28px;
+
+}
+
+
+
+.lenovo-info-card p {
+
+    font-size: 15px;
+
+    font-weight: 400;
+
+    line-height: 1.7;
+
+    color: #555;
+
+}
+
+
+
+.lenovo-link {
+
+    color: #0066c9;
+
+    text-decoration: underline;
+
+    cursor: pointer;
+
+}
+
+
+
+.read-more-btn {
+
+    margin-top: 25px;
+
+    background: none;
+
+    border: none;
+
+    padding: 0;
+
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    text-decoration: underline;
+
+    cursor: pointer;
+
+}
+
+
+.read-more-btn:hover {
+
+    color:#e2231a;
+
+}

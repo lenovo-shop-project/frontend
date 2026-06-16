@@ -1,96 +1,108 @@
 .banners-section {
-    padding: 0 170px 60px;
+  width: 100%;
+  background: #eeeeee;
+  padding-bottom: 60px;
 }
 
-.banners-section h2 {
-    font-size: 26px;
-    font-weight: 400;
-    margin: 0 0 25px;
-    color: #15191f;
+
+.banner-container {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
 }
+
 
 .banner-slider {
-    position: relative;
-    width: 100%;
-    height: 340px;
-    overflow: hidden;
-    border-radius: 6px;
-    background-color: #eeeeee;
+  position: relative;
+
+  width: 100%;
+  height: 280px;
+
+  overflow: hidden;
 }
+
 
 .slider-track {
-    display: flex;
-    height: 100%;
-    transition: transform 0.8s ease-in-out;
+  display: flex;
+  height: 100%;
+  transition: transform 0.8s ease-in-out;
 }
+
 
 .slider-track img {
-    min-width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+  width: 100%;
+  min-width: 100%;
+
+  height: 100%;
+
+  object-fit: cover;   /* щоб заповнювало */
+  object-position: center;
+
+  display: block;
 }
+
+
 
 .banner-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+  position: absolute;
 
-    width: 44px;
-    height: 44px;
+  top: 50%;
+  transform: translateY(-50%);
 
-    border: none;
-    border-radius: 6px;
+  width: 44px;
+  height: 44px;
 
-    background: white;
-    color: #15191f;
+  border: none;
+  background: white;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  font-size: 28px;
 
-    cursor: pointer;
-    z-index: 10;
+  cursor: pointer;
+
+  z-index: 5;
 }
+
 
 .banner-arrow.left {
-    left: 12px;
+  left: 15px;
 }
+
 
 .banner-arrow.right {
-    right: 12px;
+  right: 15px;
 }
 
-.banner-arrow svg {
-    font-size: 34px;
-}
 
 .banner-dots {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    padding: 20px 0 45px;
+  gap: 6px;
+
+  width: fit-content;
+  margin: 15px auto 45px;
 }
+
 
 .banner-dots button {
-    width: 8px;
-    height: 8px;
+  width: 7px !important;
+  height: 7px !important;
 
-    padding: 0;
+  min-width: 7px !important;
+  max-width: 7px;
 
-    border: 1px solid #15191f;
-    border-radius: 50%;
+  padding: 0 !important;
 
-    background: transparent;
+  border-radius: 50%;
+  border: 1px solid #222;
 
-    cursor: pointer;
+  background: transparent;
+
+  flex: 0 0 auto;
 }
+
 
 .banner-dots button.active {
-    background: #15191f;
-}
-
-.bottom-banner {
-    margin-top: 15px;
+  background: #222;
 }

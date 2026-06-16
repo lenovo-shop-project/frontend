@@ -1,32 +1,50 @@
 .category-section {
-  padding: 0 160px 40px;
-  background: #eeeeee;
+  padding: 40px 0;
+
+  position: relative;
+  z-index: 10;
 }
+
 
 .category-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
+  gap: 8px;
+
+  overflow: visible;
 }
+
+
+@media (max-width: 1100px) {
+  .category-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+
+@media (max-width: 700px) {
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 
 .category-card {
-  position: relative;
-  height: 270px;
+  width: 100%;
 
-  background: white;
-  border: 1px solid #d4d4d4;
-  border-radius: 5px;
-
-  overflow: hidden;
-  cursor: pointer;
+  position: relative;   /* ось це загубилось */
+  overflow: hidden;     /* можна повернути */
 }
+
 
 .category-card img {
   width: 100%;
   height: 220px;
+
   object-fit: cover;
   display: block;
 }
+
 
 .category-title {
   height: 50px;
@@ -40,6 +58,7 @@
   color: #15191f;
 }
 
+
 .category-hover {
   position: absolute;
   inset: 0;
@@ -47,33 +66,42 @@
   background: #eaf3ff;
 
   display: none;
+
   flex-direction: column;
   align-items: center;
 
   padding: 25px 15px;
 
   overflow-y: auto;
-  z-index: 5;
+
+  z-index: 50;
 }
+
 
 .category-card:hover .category-hover {
   display: flex;
 }
 
+
 .category-hover-item {
   font-size: 15px;
   color: black;
+
   margin-bottom: 15px;
+
   text-align: center;
 }
+
 
 .category-hover-item:hover {
   text-decoration: underline;
 }
 
+
 .category-hover::-webkit-scrollbar {
   width: 6px;
 }
+
 
 .category-hover::-webkit-scrollbar-thumb {
   background: #777;

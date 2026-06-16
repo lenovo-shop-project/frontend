@@ -15,7 +15,21 @@ const SearchOverlay = ({ close }: Props) => {
 
     console.log("Шукаємо:", text);
 
-    // ТУТ БУДЕ ЗАПИТ НА BACKEND fetch
+   //  ЗАПИТ НА FASTAPI 
+//
+// GET http://localhost:8000/products/search?query=
+// 
+// Приклад FastAPI:
+//
+// @app.get("/products/search")
+// async def search_products(query: str):
+//     return products
+//
+// fetch(`http://localhost:8000/products/search?query=${text}`)
+//      .then(res => res.json())
+//      .then(data => {
+//          // setProducts(data)
+//      })
    
 
   };
