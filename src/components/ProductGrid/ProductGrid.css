@@ -1,0 +1,38 @@
+.product-section {
+  padding: 70px 0;
+  background: #eeeeee;
+}
+
+
+.product-section h2 {
+  font-size: 26px;
+  font-weight: 600;
+  margin: 0 0 25px;
+  color: #15191f;
+}
+
+
+.product-grid {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
+  gap: 10px;
+}
+
+
+.empty-products {
+
+  width: 100%;
+  height: 180px;
+
+  background:white;
+  border:1px dashed #ccc;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:18px;
+  color:#777;
+}

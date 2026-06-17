@@ -8,14 +8,38 @@ import AuthModal from "../AuthModal/AuthModal";
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [authOpen,setAuthOpen] = useState(false);
+  const filterByCategory = (category: string) => {
+  console.log("Фільтр категорії:", category);
+  };
+
+  // ТУТ БУДЕ ЗАПИТ НА PYTHON 
+  //
+  // fetch(`http://localhost:8000/products?category=${category}`)
+  //      .then(res => res.json())
+  //      .then(data => setProducts(data))
+  //
+  // FastAPI:
+  // @app.get("/products")
+  // async def get_products(category: str):
+  //     return products
+
+
 
   return (
     <>
       <header className="header">
         <nav className="header-menu">
-  <a>Ноутбуки</a>
-  <a>Планшети</a>
-  <a>Смартфони Motorola</a>
+  <a onClick={() => filterByCategory("laptops")}>
+  Ноутбуки
+</a>
+
+<a onClick={() => filterByCategory("tablets")}>
+  Планшети
+</a>
+
+<a onClick={() => filterByCategory("motorola")}>
+  Смартфони Motorola
+</a>
 
   <div className="nav-dropdown-wrapper">
     <button className="nav-dropdown-button">Аксесуари +</button>
