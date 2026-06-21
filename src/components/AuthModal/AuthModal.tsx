@@ -5,45 +5,86 @@ import "./AuthModal.css";
 
 interface Props {
   close: () => void;
+  onLoginSuccess: () => void;
 }
 
-const AuthModal = ({ close }: Props) => {
+const AuthModal = ({ close, onLoginSuccess }: Props) => {
   const [tab, setTab] = useState<"login" | "register">("login");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const submit = () => {
-    if (tab === "login") {
-      console.log("LOGIN", email, password);
+  const [imageUrl, setImageUrl] = useState("");
 
-      // PYTHON LOGIN
-      //
-      // POST http://localhost:8000/auth/login
-      //
-      // FastAPI:
-      // @app.post("/auth/login")
-      //
-      // body:
-      // {
-      //   email,
-      //   password
-      // }
-    } else {
-      console.log("REGISTER", email, password);
+  const submit = async () => {
+    try {
+      const url =
+        tab === "login" ? "/api/auth/login" : "/api/auth/register";
 
-      //  PYTHON REGISTER
-      //
-      // POST http://localhost:8000/auth/register
-      //
-      // FastAPI:
-      // @app.post("/auth/register")
-      //
-      // body:
-      // {
-      //   email,
-      //   password
-      // }
+      const body =
+        tab === "login"
+          ? {
+              email: email,
+              password: password,
+            }
+          : {
+              email: email,
+              password: password,
+              image_url:
+                imageUrl.trim() !== ""
+                  ? imageUrl
+                  : "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+            };
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.detail || "Помилка авторизації");
+        return;
+      }
+
+      if (tab === "login") {
+        localStorage.setItem("token", data.access_token);
+
+        const meResponse = await fetch("/api/auth/me", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${data.access_token}`,
+          },
+        });
+
+        const me = await meResponse.json();
+
+        if (me.image_url) {
+          localStorage.setItem("avatar", me.image_url);
+        } else {
+          localStorage.setItem(
+            "avatar",
+            "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+          );
+        }
+
+        window.dispatchEvent(new Event("avatarChanged"));
+
+        onLoginSuccess();
+        alert("Вхід успішний");
+        close();
+      } else {
+        alert("Реєстрація успішна. Тепер увійди.");
+        setTab("login");
+        setPassword("");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Бекенд не відповідає");
     }
   };
 
@@ -96,6 +137,18 @@ const AuthModal = ({ close }: Props) => {
 
           <VisibilityIcon />
         </div>
+
+        {tab === "register" && (
+          <>
+            <label>Зображення профілю</label>
+
+            <input
+              placeholder="https://example.com/avatar.png"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+            />
+          </>
+        )}
 
         <button className="auth-submit" onClick={submit}>
           {tab === "login" ? "Увійти" : "Зареєструватися"}

@@ -1,0 +1,181 @@
+.admin-panel {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.admin-panel h1 {
+  font-size: 32px;
+  margin-bottom: 30px;
+}
+
+.admin-card {
+  background: white;
+  border-radius: 14px;
+
+  padding: 25px;
+  margin-bottom: 35px;
+
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.admin-card h2 {
+  margin-bottom: 20px;
+}
+
+
+.admin-card input,
+.admin-card textarea {
+  width: 100%;
+
+  padding: 14px;
+  margin-bottom: 15px;
+
+  border: 1px solid #ddd;
+  border-radius: 8px;
+
+  font-size: 16px;
+}
+
+.admin-card textarea {
+  height: 100px;
+  resize: none;
+}
+
+
+.admin-card button {
+  background: #e2231a;
+  color: white;
+
+  border: none;
+  border-radius: 8px;
+
+  padding: 12px 22px;
+
+  cursor: pointer;
+
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.admin-card button:hover {
+  background: #b91c14;
+}
+
+
+/* список товарів */
+
+.admin-products {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
+.admin-product {
+  display: flex;
+  gap: 25px;
+
+  padding: 20px;
+
+  border: 1px solid #eee;
+  border-radius: 12px;
+}
+
+
+.admin-product img {
+  width: 150px;
+  height: 150px;
+
+  object-fit: contain;
+
+  background: #fafafa;
+}
+
+
+.admin-product h3 {
+  margin: 0 0 10px;
+}
+
+
+.admin-product p {
+  color: #555;
+}
+
+
+.active {
+  color: green;
+  font-weight: bold;
+}
+
+
+.inactive {
+  color: #e2231a;
+  font-weight: bold;
+}
+
+
+@media(max-width:700px){
+
+  .admin-product {
+    flex-direction: column;
+  }
+
+  .admin-product img {
+    width: 100%;
+  }
+}
+.cancel-edit-btn {
+  margin-left: 12px;
+  background: #555 !important;
+}
+
+.admin-product-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+}
+.admin-close-btn {
+  position: fixed;
+
+  top: 190px;
+  right: 50px;
+
+  width: 54px;
+  height: 54px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #e2231a !important;
+
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 32px;
+  font-weight: 300;
+
+  cursor: pointer;
+
+  z-index: 999999;
+
+  box-shadow:
+    0 10px 25px rgba(226,35,26,.35);
+
+  transition: .2s;
+}
+
+.admin-close-btn:hover {
+  background: #b81b14 !important;
+
+  transform:
+    scale(1.08)
+    rotate(90deg);
+}
+
+.admin-close-btn:hover {
+  background: #000 !important;
+}

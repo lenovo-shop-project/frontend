@@ -22,3 +22,21 @@ body {
   width: calc(100% - 120px);
   margin: 0 auto;
 }
+.back-home-btn {
+  margin-bottom: 25px;
+
+  background: transparent;
+  border: none;
+
+  font-size: 15px;
+  cursor: pointer;
+
+  color: #555;
+}
+
+
+.back-home-btn:hover {
+  color: #e2231a;
+}
+
+

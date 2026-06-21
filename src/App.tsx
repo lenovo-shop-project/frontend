@@ -17,7 +17,8 @@ import RightFixedButtons from "./components/RightFixedButtons/RightFixedButtons"
 import "./App.css";
 
 function App() {
-  const [page, setPage] = useState<"home" | "benefits">("home");
+  const [page, setPage] =
+    useState<"home" | "benefits" | "laptops" | "tablets" | "motorola">("home");
 
   if (page === "benefits") {
     return (
@@ -25,8 +26,128 @@ function App() {
         <LeftBanner />
         <RightFixedButtons />
         <TopPromoSlider />
-        <Header />
+
+        <Header
+          openLaptopsPage={() => setPage("laptops")}
+          openTabletsPage={() => setPage("tablets")}
+        />
+
         <BenefitsPage goHome={() => setPage("home")} />
+      </>
+    );
+  }
+
+  if (page === "laptops") {
+    return (
+      <>
+        <LeftBanner />
+        <RightFixedButtons />
+        <TopPromoSlider />
+
+        <Header
+          openLaptopsPage={() => setPage("laptops")}
+          openTabletsPage={() => setPage("tablets")}
+          openMotorolaPage={() => setPage("motorola")}
+        />
+
+        <main className="page-content">
+          <div className="container">
+            <button
+              className="back-home-btn"
+              onClick={() => setPage("home")}
+            >
+              ← На головну
+            </button>
+
+            <MainSearch />
+            <Banners />
+
+            <ProductGrid
+              title="Ноутбуки"
+              categoryKeyword="ноутбук"
+              showPagination={true}
+            />
+          </div>
+
+          <Footer />
+        </main>
+      </>
+    );
+  }
+  if (page === "motorola") {
+  return (
+    <>
+      <LeftBanner />
+      <RightFixedButtons />
+      <TopPromoSlider />
+
+      <Header
+        openLaptopsPage={() => setPage("laptops")}
+        openTabletsPage={() => setPage("tablets")}
+        openMotorolaPage={() => setPage("motorola")}
+      />
+
+      <main className="page-content">
+        <div className="container">
+          <button
+            className="back-home-btn"
+            onClick={() => setPage("home")}
+          >
+            ← На головну
+          </button>
+
+          <MainSearch />
+          <Banners />
+
+          <ProductGrid
+  title="Смартфони Motorola"
+  categoryKeyword="motorola"
+  showPagination={true}
+  filterType="motorola"
+/>
+        </div>
+
+        <Footer />
+      </main>
+    </>
+  );
+}
+
+  if (page === "tablets") {
+    return (
+      <>
+        <LeftBanner />
+        <RightFixedButtons />
+        <TopPromoSlider />
+
+        <Header
+          openLaptopsPage={() => setPage("laptops")}
+          openTabletsPage={() => setPage("tablets")}
+          openMotorolaPage={() => setPage("motorola")}
+        />
+
+        <main className="page-content">
+          <div className="container">
+            <button
+              className="back-home-btn"
+              onClick={() => setPage("home")}
+            >
+              ← На головну
+            </button>
+
+            <MainSearch />
+            <Banners />
+
+            <ProductGrid
+  title="Планшети"
+  categoryKeyword="планшет"
+  showPagination={true}
+  filterType="tablet"
+/>
+          </div>
+
+          <Footer />
+        </main>
       </>
     );
   }
@@ -35,33 +156,28 @@ function App() {
     <>
       <LeftBanner />
       <RightFixedButtons />
-
       <TopPromoSlider />
-      <Header />
+
+      <Header
+        openLaptopsPage={() => setPage("laptops")}
+        openTabletsPage={() => setPage("tablets")}
+        openMotorolaPage={() => setPage("motorola")}
+      />
 
       <main className="page-content">
+        <div className="container">
+          <MainSearch />
+          <Banners />
+          <CategoryGrid />
+          <ProductGrid />
 
-  <div className="container">
+          <Benefits openBenefitsPage={() => setPage("benefits")} />
 
-    <MainSearch />
+          <LenovoInfo />
+        </div>
 
-    <Banners />
-
-    <CategoryGrid />
-
-    <ProductGrid />
-
-    <Benefits 
-      openBenefitsPage={() => setPage("benefits")}
-    />
-
-    <LenovoInfo />
-
-  </div>
-
-  <Footer />
-
-</main>
+        <Footer />
+      </main>
     </>
   );
 }
