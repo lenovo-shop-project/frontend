@@ -272,3 +272,23 @@
 }
 
 }
+/* hover для всіх пунктів футера */
+
+.footer a,
+.footer-title,
+.footer-bottom a {
+
+  cursor: pointer;
+
+  transition: 0.2s;
+
+}
+
+
+.footer a:hover,
+.footer-title:hover span,
+.footer-bottom a:hover {
+
+  text-decoration: underline;
+
+}

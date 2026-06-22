@@ -31,6 +31,26 @@ const accessories = [
   "Операційні системи",
   "Офісні програми",
 ];
+const accessoriesSearchMap: Record<string, string> = {
+  "Додаткові сервіси": "сервіс",
+  "Миші та Килимки": "миша",
+  "Сумки, рюкзаки, чохли для ноутбуків": "сумка",
+  "Док-станції для ноутбуків": "док",
+  "Блоки живлення, зарядні пристрої для ноутбуків": "заряд",
+  "Акумулятори для ноутбуків": "акумулятор",
+  "Навушники": "навушники",
+  "Клавіатури": "клавіатура",
+  "Кабелі та перехідники": "кабель",
+  "Чохли для планшетів": "чохол",
+  "Зарядні пристрої для планшетів": "заряд",
+  "Стилуси": "стилус",
+  "Настільні кріплення": "кріплення",
+  "Акустика": "акустика",
+  "Веб-камери": "камера",
+  "Віртуальна реальність": "vr",
+  "Операційні системи": "windows",
+  "Офісні програми": "office",
+};
 
 const otherProducts = [
   "Інтерактивні Панелі",
@@ -40,6 +60,14 @@ const otherProducts = [
   "Ігрові консолі",
   "Сервери",
 ];
+const otherProductsSearchMap: Record<string, string> = {
+  "Інтерактивні Панелі": "інтерактивна панель",
+  "Моноблоки": "моноблок",
+  "Настільні ПК": "пк",
+  "Монітори": "монітор",
+  "Ігрові консолі": "консоль",
+  "Сервери": "сервер",
+};
 
 const buyerMenu = [
   "Акції",
@@ -55,11 +83,16 @@ interface HeaderProps {
   openLaptopsPage?: () => void;
   openTabletsPage?: () => void;
   openMotorolaPage?: () => void;
+  openPromotionsPage?: () => void;
+  openSearchCategory?: (title: string, keyword: string) => void;
 }
 const Header = ({
   openLaptopsPage,
   openTabletsPage,
   openMotorolaPage,
+  openPromotionsPage,
+  openSearchCategory,
+  
 }: HeaderProps) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
@@ -133,18 +166,7 @@ if (role === "admin") {
     };
   }, []);
 
-  const openSearchByCategory = (value: string) => {
-    setShowSearch(true);
-
-    setTimeout(() => {
-      const input = document.querySelector<HTMLInputElement>(".search-box input");
-
-      if (input) {
-        input.value = value;
-        input.dispatchEvent(new Event("input", { bubbles: true }));
-      }
-    }, 100);
-  };
+  
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -185,10 +207,18 @@ if (role === "admin") {
 
             <div className="header-dropdown-menu large">
               {accessories.map((item) => (
-                <button key={item} onClick={() => openSearchByCategory(item)}>
-                  {item}
-                </button>
-              ))}
+  <button
+    key={item}
+    onClick={() => {
+      openSearchCategory?.(
+        item,
+        accessoriesSearchMap[item] || item
+      );
+    }}
+  >
+    {item}
+  </button>
+))}
             </div>
           </div>
 
@@ -199,14 +229,29 @@ if (role === "admin") {
 
             <div className="header-dropdown-menu">
               {otherProducts.map((item) => (
-                <button key={item} onClick={() => openSearchByCategory(item)}>
-                  {item}
-                </button>
-              ))}
+  <button
+    key={item}
+    onClick={() => {
+      openSearchCategory?.(
+        item,
+        otherProductsSearchMap[item] || item
+      );
+    }}
+  >
+    {item}
+  </button>
+))}
             </div>
           </div>
 
-          <button className="portal-btn">Портал</button>
+          <button
+  className="portal-btn"
+  onClick={() => {
+    window.open("https://lenovo.ua/", "_blank");
+  }}
+>
+  Портал
+</button>
         </nav>
 
         <div className="header-actions">
@@ -217,8 +262,68 @@ if (role === "admin") {
 
             <div className="header-dropdown-menu buyer-menu">
               {buyerMenu.map((item) => (
-                <button key={item}>{item}</button>
-              ))}
+  <button
+    key={item}
+    onClick={() => {
+
+      if (item === "Акції") {
+        openPromotionsPage?.();
+      }
+
+      if (item === "Trade-in планшетів") {
+        window.open(
+          "https://shop.lenovo.ua/tradein_tabs",
+          "_blank"
+        );
+      }
+
+      if (item === "Для бізнесу") {
+        window.open(
+          "https://shop.lenovo.ua/smb",
+          "_blank"
+        );
+      }
+
+      if (item === "Бонусна програма") {
+        window.open(
+          "https://shop.lenovo.ua/bonus-program",
+          "_blank"
+        );
+      }
+
+      if (item === "Додаткові Сервіси") {
+        window.open(
+          "https://lenovo.ua/lp/services",
+          "_blank"
+        );
+      }
+
+      if (item === "Форум підтримки") {
+        window.open(
+          "https://forums.lenovo.com/t5/One-Language-Community/ct-p/Community-OLC",
+          "_blank"
+        );
+      }
+
+      if (item === "Інструкції з експлуатації") {
+        window.open(
+          "https://support.lenovo.com/ua/uk?tabName=Manuals",
+          "_blank"
+        );
+      }
+
+      if (item === "Сервісні центри") {
+        window.open(
+          "https://service.lenovo.ua/uk/service-centers",
+          "_blank"
+        );
+      }
+
+    }}
+  >
+    {item}
+  </button>
+))}
             </div>
           </div>
 

@@ -22,7 +22,7 @@ export interface Product {
   isSale?: boolean;
   isHit?: boolean;
   bonuses?: number;
-
+description?: string | null;
   is_available?: boolean;
   isAvailable?: boolean;
 }
@@ -130,10 +130,16 @@ if (role === "admin" || role === "userrole.admin") {
           </div>
         </div>
 
-        <button className="cart-button" onClick={addToCart}>
-  <ShoppingCartIcon />
-</button>
+             <button className="cart-button" onClick={addToCart}>
+          <ShoppingCartIcon />
+        </button>
       </div>
+
+      {product.description && (
+        <div className="product-hover-description">
+          {product.description}
+        </div>
+      )}
     </div>
   );
 };

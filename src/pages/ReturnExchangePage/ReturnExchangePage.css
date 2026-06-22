@@ -1,0 +1,103 @@
+.return-page {
+  width: 1050px;
+  margin: 40px auto;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.return-back {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  margin-bottom: 22px;
+}
+
+.return-back:hover {
+  text-decoration: underline;
+}
+
+.return-breadcrumbs {
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.return-page h1 {
+  font-size: 34px;
+  font-weight: 400;
+  margin-bottom: 30px;
+}
+
+.return-layout {
+  display: grid;
+  grid-template-columns: 310px 1fr;
+  gap: 35px;
+}
+
+.return-tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.return-tabs button {
+  height: 55px;
+  border: none;
+  background: #f1f1f1;
+  text-align: left;
+  padding: 0 22px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.return-tabs button.active {
+  background: #e9e9e9;
+  border-left: 4px solid #e2231a;
+}
+
+.return-content {
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.return-content p {
+  margin-bottom: 18px;
+}
+
+.return-content ul {
+  margin: 20px 0 30px;
+}
+
+.return-content ul li {
+  margin-bottom: 13px;
+}
+
+.return-content ul li::marker {
+  color: #e2231a;
+}
+
+.return-content ol {
+  margin: 20px 0 35px;
+}
+
+.return-content ol li {
+  margin-bottom: 14px;
+}
+
+.return-content ol li::marker {
+  color: #e2231a;
+  font-weight: 700;
+}
+
+.return-content a {
+  color: #0066c9;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .return-page {
+    width: 90%;
+  }
+
+  .return-layout {
+    grid-template-columns: 1fr;
+  }
+}

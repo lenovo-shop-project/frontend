@@ -2,9 +2,12 @@
   position: fixed;
   left: 0;
   top: 0;
+
   width: 65px;
   height: 100vh;
+
   background-color: #e2231a;
+
   z-index: 9999;
 }
 
@@ -12,9 +15,10 @@
   color: white;
   font-size: 27px;
   font-weight: 700;
-  text-decoration-style: dotted;
+
   writing-mode: vertical-rl;
   transform: rotate(180deg);
+
   position: absolute;
   top: 45px;
   left: 18px;
@@ -24,18 +28,124 @@
   position: fixed;
   left: 98px;
   bottom: 15px;
+
   width: 68px;
   height: 68px;
+
   border-radius: 50%;
   border: none;
+
   background-color: red;
   color: white;
+
   z-index: 10000;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  cursor: pointer;
 }
 
 .phone-button svg {
   font-size: 32px;
+}
+
+/* вікно телефону */
+
+.phone-modal {
+  position: fixed;
+  left: 180px;
+  bottom: 20px;
+
+  width: 330px;
+
+  background: white;
+  padding: 24px;
+
+  border-radius: 12px;
+  box-shadow: 0 8px 35px rgba(0, 0, 0, 0.25);
+
+  z-index: 10001;
+
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.phone-modal h3 {
+  margin: 0 0 12px;
+  font-size: 20px;
+}
+
+.phone-modal p {
+  color: #555;
+  line-height: 1.4;
+  margin-bottom: 16px;
+}
+
+.phone-modal input {
+  width: 100%;
+  padding: 13px;
+
+  border: 1px solid #ddd;
+  border-radius: 5px;
+
+  margin-bottom: 15px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.phone-modal-send {
+  width: 100%;
+
+  padding: 13px;
+
+  border: none;
+  border-radius: 5px;
+
+  background: #e2231a;
+  color: white;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.phone-modal-send:hover {
+  background: #b91c14;
+}
+
+.phone-modal-close {
+  position: absolute;
+  right: 12px;
+  top: 8px;
+
+  border: none;
+  background: transparent;
+
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.phone-modal-close:hover {
+  color: #e2231a;
+}
+
+.phone-success {
+  text-align: center;
+  padding: 20px 5px;
+}
+
+.phone-success button {
+  margin-top: 15px;
+  padding: 11px 28px;
+
+  border: none;
+  border-radius: 5px;
+
+  background: #e2231a;
+  color: white;
+
+  cursor: pointer;
+  font-weight: 700;
 }

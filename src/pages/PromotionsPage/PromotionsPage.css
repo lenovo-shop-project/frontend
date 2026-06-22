@@ -1,0 +1,180 @@
+.promotions-page {
+  max-width: 1200px;
+  margin: 40px auto;
+}
+
+.promotions-back {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.promotions-back:hover {
+  color: #e2231a;
+}
+
+.promotions-breadcrumbs {
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.promotions-page h1 {
+  font-size: 32px;
+  margin-bottom: 25px;
+}
+
+.promotions-page h1 span {
+  font-size: 16px;
+  color: #777;
+  font-weight: 400;
+}
+
+.promotions-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 18px;
+}
+
+.promotions-filters {
+  background: white;
+  padding: 18px;
+  align-self: start;
+}
+
+.promotions-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid #ddd;
+  margin-bottom: 25px;
+}
+
+.promotions-tabs button {
+  border: none;
+  background: white;
+  padding: 13px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.promotions-tabs button.active {
+  background: #f1f1f1;
+}
+
+.promo-filter-block {
+  border-top: 1px solid #eee;
+  padding: 18px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.promo-filter-block h3 {
+  margin: 0 0 6px;
+}
+
+.promo-filter-block label {
+  font-size: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.promotions-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.promo-card {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.promo-image-box {
+  position: relative;
+  height: 260px;
+  overflow: hidden;
+}
+
+.promo-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.promo-timer {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  background: rgba(255, 255, 255, 0.28);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+.promo-timer div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.promo-timer b {
+  font-size: 20px;
+}
+
+.promo-timer span {
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.promo-title {
+  padding: 20px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.empty-promotions {
+  background: white;
+  padding: 30px;
+  color: #777;
+}
+
+@media (max-width: 900px) {
+  .promotions-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .promotions-list {
+    grid-template-columns: 1fr;
+  }
+}
+.promo-filter-block label {
+  color: #111;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.promo-filter-block input {
+  width: auto;
+  height: auto;
+  accent-color: #e2231a;
+}
+
+.promo-filter-block h3 {
+  color: #111;
+}
+
+.promotions-tabs button {
+  color: #111;
+}
+.promotions-filters,
+.promotions-filters * {
+  color: #111;
+}
