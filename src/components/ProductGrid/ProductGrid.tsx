@@ -3,14 +3,20 @@ import ProductCard from "../ProductCard/ProductCard";
 import type { Product } from "../ProductCard/ProductCard";
 import "./ProductGrid.css";
 
+type FilterType = "default" | "tablet" | "motorola" | "simple";
+
 interface ProductGridProps {
   title?: string;
   categoryKeyword?: string;
   showPagination?: boolean;
-  filterType?: "default" | "tablet" | "motorola";
+  filterType?: FilterType;
 }
 
-const getFilterList = (filterType: "default" | "tablet" | "motorola") => {
+const getFilterList = (filterType: FilterType) => {
+  if (filterType === "simple") {
+    return [];
+  }
+
   if (filterType === "motorola") {
     return [
       "Серія",
@@ -88,7 +94,11 @@ const getFilterList = (filterType: "default" | "tablet" | "motorola") => {
   ];
 };
 
-const getLineOptions = (filterType: "default" | "tablet" | "motorola") => {
+const getLineOptions = (filterType: FilterType) => {
+  if (filterType === "simple") {
+    return [];
+  }
+
   if (filterType === "motorola") {
     return ["Всі", "Edge", "Razr", "Moto G"];
   }
@@ -107,14 +117,15 @@ const ProductGrid = ({
   filterType = "default",
 }: ProductGridProps) => {
   const [products, setProducts] = useState<Product[]>([]);
-
   const [page, setPage] = useState(1);
   const [visibleCount, setVisibleCount] = useState(12);
 
   const [onlyAvailable, setOnlyAvailable] = useState(false);
   const [sort, setSort] = useState("default");
-  const [priceFilter, setPriceFilter] = useState("");
   const [brandFilter, setBrandFilter] = useState("");
+
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
 
   useEffect(() => {
     fetch("/api/client/products")
@@ -122,6 +133,7 @@ const ProductGrid = ({
         if (!res.ok) {
           throw new Error("Ошибка при получении данных с сервера");
         }
+
         return res.json();
       })
       .then((data) => {
@@ -154,18 +166,11 @@ const ProductGrid = ({
       }
     }
 
-    if (priceFilter === "cheap" && product.price > 30000) {
+    if (minPrice && product.price < Number(minPrice)) {
       return false;
     }
 
-    if (
-      priceFilter === "middle" &&
-      (product.price < 30000 || product.price > 60000)
-    ) {
-      return false;
-    }
-
-    if (priceFilter === "expensive" && product.price < 60000) {
+    if (maxPrice && product.price > Number(maxPrice)) {
       return false;
     }
 
@@ -202,78 +207,74 @@ const ProductGrid = ({
             </div>
 
             <div className="filter-block">
-              <div className="filter-title">За ціною</div>
+              <div className="filter-title">Ціна</div>
 
-              <label>
+              <div className="price-range-box">
                 <input
-                  type="radio"
-                  name="price"
-                  checked={priceFilter === ""}
-                  onChange={() => setPriceFilter("")}
+                  type="number"
+                  placeholder="від"
+                  value={minPrice}
+                  onChange={(e) => {
+                    setMinPrice(e.target.value);
+                    setPage(1);
+                  }}
                 />
-                Всі
-              </label>
 
-              <label>
                 <input
-                  type="radio"
-                  name="price"
-                  checked={priceFilter === "cheap"}
-                  onChange={() => setPriceFilter("cheap")}
+                  type="number"
+                  placeholder="до"
+                  value={maxPrice}
+                  onChange={(e) => {
+                    setMaxPrice(e.target.value);
+                    setPage(1);
+                  }}
                 />
-                до 30000
-              </label>
-
-              <label>
-                <input
-                  type="radio"
-                  name="price"
-                  checked={priceFilter === "middle"}
-                  onChange={() => setPriceFilter("middle")}
-                />
-                30000 - 60000
-              </label>
-
-              <label>
-                <input
-                  type="radio"
-                  name="price"
-                  checked={priceFilter === "expensive"}
-                  onChange={() => setPriceFilter("expensive")}
-                />
-                від 60000
-              </label>
-            </div>
-
-            <div className="filter-block">
-              <div className="filter-title">
-                {filterType === "tablet" ? "Лінійка" : "Лінійка"}
               </div>
 
-              {lineOptions.map((item) => (
-                <label key={item}>
-                  <input
-                    type="radio"
-                    name="brand"
-                    checked={
-                      item === "Всі"
-                        ? brandFilter === ""
-                        : brandFilter === item
-                    }
-                    onChange={() =>
-                      setBrandFilter(item === "Всі" ? "" : item)
-                    }
-                  />
+              <button
+                className="clear-price-btn"
+                onClick={() => {
+                  setMinPrice("");
+                  setMaxPrice("");
+                  setPage(1);
+                }}
+              >
+                Очистити
+              </button>
+            </div>
+
+            {filterType !== "simple" && (
+              <div className="filter-block">
+                <div className="filter-title">Лінійка</div>
+
+                {lineOptions.map((item) => (
+                  <label key={item}>
+                    <input
+                      type="radio"
+                      name="brand"
+                      checked={
+                        item === "Всі"
+                          ? brandFilter === ""
+                          : brandFilter === item
+                      }
+                      onChange={() => {
+                        setBrandFilter(item === "Всі" ? "" : item);
+                        setPage(1);
+                      }}
+                    />
+                    {item}
+                  </label>
+                ))}
+              </div>
+            )}
+
+            {filterType !== "simple" &&
+              filterList.map((item) => (
+                <div className="filter-closed" key={item}>
                   {item}
-                </label>
+                  <span>+</span>
+                </div>
               ))}
-            </div>
-
-            {filterList.map((item) => (
-              <div className="filter-closed" key={item}>
-                {item} <span>+</span>
-              </div>
-            ))}
           </aside>
 
           <div className="category-products">
@@ -281,7 +282,13 @@ const ProductGrid = ({
               <span>Знайдено {filteredProducts.length} товарів</span>
 
               <div className="category-sort">
-                <select value={sort} onChange={(e) => setSort(e.target.value)}>
+                <select
+                  value={sort}
+                  onChange={(e) => {
+                    setSort(e.target.value);
+                    setPage(1);
+                  }}
+                >
                   <option value="default">Сортування: за замовчуванням</option>
                   <option value="cheap">Спочатку дешевші</option>
                   <option value="expensive">Спочатку дорожчі</option>
@@ -291,7 +298,10 @@ const ProductGrid = ({
                   <input
                     type="checkbox"
                     checked={onlyAvailable}
-                    onChange={(e) => setOnlyAvailable(e.target.checked)}
+                    onChange={(e) => {
+                      setOnlyAvailable(e.target.checked);
+                      setPage(1);
+                    }}
                   />
                   В наявності
                 </label>

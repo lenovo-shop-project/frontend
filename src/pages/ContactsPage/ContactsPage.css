@@ -1,0 +1,83 @@
+.contacts-page {
+  width: 900px;
+  margin: 40px auto;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.contacts-back {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  margin-bottom: 22px;
+}
+
+.contacts-back:hover {
+  text-decoration: underline;
+}
+
+.contacts-breadcrumbs {
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.contacts-page h1 {
+  font-size: 34px;
+  font-weight: 400;
+  margin-bottom: 30px;
+}
+
+.contacts-content h2 {
+  font-size: 23px;
+  font-weight: 400;
+  margin-bottom: 25px;
+}
+
+.contacts-list {
+  margin: 0;
+  padding-left: 35px;
+}
+
+.contacts-list li {
+  margin-bottom: 25px;
+  line-height: 1.45;
+}
+
+.contacts-list li::marker {
+  color: #e2231a;
+}
+
+.contacts-list a,
+.contacts-email-text a {
+  color: #0066c9;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.contacts-list small {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.support-red-box {
+  margin: 35px 0 28px;
+  padding: 25px;
+
+  border-left: 3px solid #e2231a;
+  border-bottom: 2px solid #e2231a;
+
+  background: #f5f5f5;
+  color: #e2231a;
+
+  font-size: 22px;
+}
+
+.contacts-email-text {
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .contacts-page {
+    width: 90%;
+  }
+}

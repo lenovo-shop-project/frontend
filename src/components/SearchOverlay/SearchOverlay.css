@@ -101,3 +101,61 @@
     padding:6px 15px;
 
 }
+.search-results {
+
+    background: white;
+
+    width: 760px;
+
+    margin: 0 auto;
+
+    max-height: 450px;
+
+    overflow-y: auto;
+
+}
+
+
+.search-result-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 15px;
+
+    border-bottom: 1px solid #eee;
+
+}
+
+
+.search-result-item img {
+
+    width: 80px;
+    height: 80px;
+
+    object-fit: contain;
+
+}
+
+
+.search-result-item h4 {
+
+    margin:0;
+
+    font-size:16px;
+
+}
+
+
+.search-result-item p {
+
+    color:#e2231a;
+
+    font-size:18px;
+
+    font-weight:700;
+
+}

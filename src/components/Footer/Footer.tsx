@@ -5,16 +5,38 @@ import DesktopWindowsIcon from "@mui/icons-material/DesktopWindows";
 import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
 import "./Footer.css";
 
-const Footer = () => {
+interface FooterProps {
+  openDeliveryPaymentPage?: () => void;
+  openReturnExchangePage?: () => void;
+  openBenefitsPage?: () => void;
+  openContactsPage?: () => void;
+  openSearchCategory?: (title: string, keyword: string) => void;
+}
+
+const Footer = ({
+  openDeliveryPaymentPage,
+  openReturnExchangePage,
+  openBenefitsPage,
+  openContactsPage,
+  openSearchCategory,
+}: FooterProps) => {
   return (
     <footer className="footer">
       <div className="footer-inner">
         <nav className="footer-top-links">
-          <a>Доставка та оплата</a>
-          <a>Повернення та обмін</a>
-          <a>Гарантійна політика</a>
-          <a>Переваги Lenovo Shop</a>
-          <a>Контакти</a>
+          <a onClick={openDeliveryPaymentPage}>Доставка та оплата</a>
+          <a onClick={openReturnExchangePage}>Повернення та обмін</a>
+
+          <a
+            onClick={() =>
+              window.open("https://shop.lenovo.ua/warranty-policy", "_blank")
+            }
+          >
+            Гарантійна політика
+          </a>
+
+          <a onClick={openBenefitsPage}>Переваги Lenovo Shop</a>
+          <a onClick={openContactsPage}>Контакти</a>
         </nav>
 
         <div className="footer-contacts">
@@ -35,16 +57,37 @@ const Footer = () => {
               <LaptopIcon />
               <span>Ноутбуки</span>
             </div>
-            <a>Ігрові ноутбуки</a>
-            <a>Для бізнесу</a>
-            <a>Тонкі і легкі</a>
-            <a>Для роботи та навчання</a>
-            <a>Мультимедійні</a>
-            <a>ThinkPad</a>
-            <a>Legion</a>
-            <a>Yoga</a>
-            <a>IdeaPad</a>
-            <a>Ультрабуки</a>
+
+            <a onClick={() => openSearchCategory?.("Ігрові ноутбуки", "ігровий")}>
+              Ігрові ноутбуки
+            </a>
+            <a onClick={() => openSearchCategory?.("Для бізнесу", "бізнес")}>
+              Для бізнесу
+            </a>
+            <a onClick={() => openSearchCategory?.("Тонкі і легкі", "тонкий")}>
+              Тонкі і легкі
+            </a>
+            <a onClick={() => openSearchCategory?.("Для роботи та навчання", "робота")}>
+              Для роботи та навчання
+            </a>
+            <a onClick={() => openSearchCategory?.("Мультимедійні", "мультимедіа")}>
+              Мультимедійні
+            </a>
+            <a onClick={() => openSearchCategory?.("ThinkPad", "thinkpad")}>
+              ThinkPad
+            </a>
+            <a onClick={() => openSearchCategory?.("Legion", "legion")}>
+              Legion
+            </a>
+            <a onClick={() => openSearchCategory?.("Yoga", "yoga")}>
+              Yoga
+            </a>
+            <a onClick={() => openSearchCategory?.("IdeaPad", "ideapad")}>
+              IdeaPad
+            </a>
+            <a onClick={() => openSearchCategory?.("Ультрабуки", "ультрабук")}>
+              Ультрабуки
+            </a>
           </div>
 
           <div className="footer-column">
@@ -52,41 +95,68 @@ const Footer = () => {
               <TabletMacIcon />
               <span>Планшети</span>
             </div>
-            <a>Трансформери</a>
-            <a>Планшети з 3G</a>
-            <a>Планшети на Windows</a>
-            <a>Планшети на Android</a>
+
+            <a onClick={() => openSearchCategory?.("Трансформери", "трансформер")}>
+              Трансформери
+            </a>
+            <a onClick={() => openSearchCategory?.("Планшети з 3G", "3g")}>
+              Планшети з 3G
+            </a>
+            <a onClick={() => openSearchCategory?.("Планшети Windows", "windows")}>
+              Планшети на Windows
+            </a>
+            <a onClick={() => openSearchCategory?.("Планшети Android", "android")}>
+              Планшети на Android
+            </a>
           </div>
 
           <div className="footer-column">
-            <div className="footer-title">
+            <div
+              className="footer-title"
+              onClick={() => openSearchCategory?.("Смартфони Motorola", "motorola")}
+            >
               <PhoneIphoneIcon />
               <span>Смартфони</span>
             </div>
 
-            <div className="footer-title second">
+            <div
+              className="footer-title second"
+              onClick={() => openSearchCategory?.("Моноблоки", "моноблок")}
+            >
               <DesktopWindowsIcon />
               <span>Моноблоки</span>
             </div>
 
-            <div className="footer-title second">
+            <div
+              className="footer-title second"
+              onClick={() => openSearchCategory?.("Настільні ПК", "пк")}
+            >
               <DesktopWindowsIcon />
               <span>Настільні ПК</span>
             </div>
 
-            <div className="footer-title second">
+            <div
+              className="footer-title second"
+              onClick={() => openSearchCategory?.("Монітори", "монітор")}
+            >
               <DesktopWindowsIcon />
               <span>Монітори</span>
             </div>
 
-            <div className="footer-title second">
+            <div
+              className="footer-title second"
+              onClick={() => openSearchCategory?.("Аксесуари", "аксесуар")}
+            >
               <CardGiftcardIcon />
               <span>Аксесуари</span>
             </div>
           </div>
 
           <div className="footer-column">
-            <div className="footer-title portal-title">
+            <div
+              className="footer-title portal-title"
+              onClick={() => window.open("https://lenovo.ua/", "_blank")}
+            >
               <span className="portal-icon">L</span>
               <span>Портал</span>
             </div>
