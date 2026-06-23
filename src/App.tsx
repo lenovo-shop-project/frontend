@@ -14,6 +14,7 @@ import BenefitsPage from "./pages/BenefitsPage/BenefitsPage";
 import Footer from "./components/Footer/Footer";
 import RightFixedButtons from "./components/RightFixedButtons/RightFixedButtons";
 import ReturnExchangePage from "./pages/ReturnExchangePage/ReturnExchangePage";
+
 import "./App.css";
 import ContactsPage from "./pages/ContactsPage/ContactsPage";
 function App() {
@@ -403,7 +404,13 @@ if (page === "searchCategory") {
   }}
 />
           <Banners />
-          <CategoryGrid />
+          <CategoryGrid
+  openSearchCategory={(title, keyword) => {
+    setCategoryTitle(title);
+    setCategoryKeyword(keyword);
+    setPage("searchCategory");
+  }}
+/>
           <ProductGrid />
 
           <Benefits openBenefitsPage={() => setPage("benefits")} />

@@ -2,39 +2,75 @@
   max-width: 1200px;
   margin: 40px auto;
   padding: 20px;
+  position: relative;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .admin-panel h1 {
   font-size: 32px;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
+}
+
+.admin-close-btn {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: #e2231a;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.admin-tabs button {
+  border: 1px solid #ddd;
+  background: white;
+  padding: 12px 22px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.admin-tabs button.active {
+  background: #e2231a;
+  color: white;
+  border-color: #e2231a;
 }
 
 .admin-card {
   background: white;
   border-radius: 14px;
-
   padding: 25px;
   margin-bottom: 35px;
-
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .admin-card h2 {
   margin-bottom: 20px;
 }
 
-
 .admin-card input,
-.admin-card textarea {
+.admin-card textarea,
+.admin-select {
   width: 100%;
-
   padding: 14px;
   margin-bottom: 15px;
-
   border: 1px solid #ddd;
   border-radius: 8px;
-
   font-size: 16px;
+  box-sizing: border-box;
 }
 
 .admin-card textarea {
@@ -42,18 +78,13 @@
   resize: none;
 }
 
-
 .admin-card button {
   background: #e2231a;
   color: white;
-
   border: none;
   border-radius: 8px;
-
   padding: 12px 22px;
-
   cursor: pointer;
-
   font-size: 16px;
   font-weight: 600;
 }
@@ -62,8 +93,27 @@
   background: #b91c14;
 }
 
+.cancel-edit-btn {
+  margin-left: 12px;
+  background: #555 !important;
+}
 
-/* список товарів */
+.admin-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.admin-card-top h2 {
+  margin: 0;
+}
+
+.admin-search {
+  max-width: 320px;
+  margin-bottom: 0 !important;
+}
 
 .admin-products {
   display: flex;
@@ -71,63 +121,37 @@
   gap: 20px;
 }
 
-
 .admin-product {
   display: flex;
   gap: 25px;
-
   padding: 20px;
-
   border: 1px solid #eee;
   border-radius: 12px;
 }
 
-
 .admin-product img {
   width: 150px;
   height: 150px;
-
   object-fit: contain;
-
   background: #fafafa;
 }
-
 
 .admin-product h3 {
   margin: 0 0 10px;
 }
 
-
 .admin-product p {
   color: #555;
 }
-
 
 .active {
   color: green;
   font-weight: bold;
 }
 
-
 .inactive {
   color: #e2231a;
   font-weight: bold;
-}
-
-
-@media(max-width:700px){
-
-  .admin-product {
-    flex-direction: column;
-  }
-
-  .admin-product img {
-    width: 100%;
-  }
-}
-.cancel-edit-btn {
-  margin-left: 12px;
-  background: #555 !important;
 }
 
 .admin-product-actions {
@@ -135,47 +159,162 @@
   gap: 12px;
   margin-top: 14px;
 }
-.admin-close-btn {
-  position: fixed;
 
-  top: 190px;
-  right: 50px;
+.category-create {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 15px;
+  margin-bottom: 25px;
+}
 
-  width: 54px;
-  height: 54px;
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-  border: none;
+.category-item {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr;
+  gap: 15px;
+  padding: 14px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  align-items: center;
+}
+
+.category-item small {
+  color: #777;
+}
+
+.users-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.user-avatar {
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
-
-  background: #e2231a !important;
-
+  background: #e2231a;
   color: white;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  font-size: 32px;
-  font-weight: 300;
-
-  cursor: pointer;
-
-  z-index: 999999;
-
-  box-shadow:
-    0 10px 25px rgba(226,35,26,.35);
-
-  transition: .2s;
+  overflow: hidden;
 }
 
-.admin-close-btn:hover {
-  background: #b81b14 !important;
-
-  transform:
-    scale(1.08)
-    rotate(90deg);
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.admin-close-btn:hover {
-  background: #000 !important;
+.user-avatar span {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.user-card h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.user-card p {
+  margin: 4px 0;
+  color: #555;
+}
+
+.admin-table {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-table-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 160px;
+  gap: 15px;
+  padding: 14px;
+  border: 1px solid #eeeeee;
+  border-radius: 8px;
+  align-items: center;
+}
+
+.order-row {
+  grid-template-columns: 80px 1fr 160px 190px;
+}
+
+.admin-table-row select {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.review-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.review-card p {
+  margin: 6px 0;
+  color: #555;
+}
+
+.review-card button {
+  height: 45px;
+  background: #222;
+}
+
+@media (max-width: 800px) {
+  .admin-product,
+  .user-card,
+  .review-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .users-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-card-top,
+  .category-create {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-table-row,
+  .order-row,
+  .category-item {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-product img {
+    width: 100%;
+  }
+
+  .admin-search {
+    max-width: 100%;
+  }
 }

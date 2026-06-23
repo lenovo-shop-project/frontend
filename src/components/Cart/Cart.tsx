@@ -57,26 +57,52 @@ const Cart = ({ close }: CartProps) => {
     0
   );
 
-  const checkout = () => {
+  const checkout = async () => {
     if (items.length === 0) return;
 
-    const newOrder = {
-      id: Date.now(),
-      date: new Date().toLocaleString("uk-UA"),
-      status: "Оплачено",
-      items: items,
-      total: total,
-    };
+    const token =
+      localStorage.getItem("access_token") ||
+      localStorage.getItem("token");
 
-    const savedOrders = localStorage.getItem("orders");
-    const orders = savedOrders ? JSON.parse(savedOrders) : [];
+    if (!token) {
+      alert("Спочатку увійдіть в акаунт");
+      return;
+    }
 
-    localStorage.setItem("orders", JSON.stringify([...orders, newOrder]));
+    const orderItems = items.map((item) => ({
+      product_id: item.id,
+      quantity: item.quantity,
+    }));
+
+    console.log("CREATE ORDER BODY:", {
+      items: orderItems,
+    });
+
+    const response = await fetch("/api/client/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        items: orderItems,
+      }),
+    });
+
+    const data = await response.json().catch(() => null);
+
+    console.log("CREATE ORDER RESPONSE:", data);
+
+    if (!response.ok) {
+      alert(data?.detail || "Не вдалося оформити замовлення");
+      return;
+    }
+
     localStorage.removeItem("cart");
-
     setItems([]);
 
     alert("Замовлення оформлено та оплачено!");
+    close();
   };
 
   return (
@@ -101,9 +127,15 @@ const Cart = ({ close }: CartProps) => {
                     <p>{item.price} грн</p>
 
                     <div className="cart-quantity">
-                      <button onClick={() => decreaseQuantity(item.id)}>-</button>
+                      <button onClick={() => decreaseQuantity(item.id)}>
+                        -
+                      </button>
+
                       <span>{item.quantity}</span>
-                      <button onClick={() => increaseQuantity(item.id)}>+</button>
+
+                      <button onClick={() => increaseQuantity(item.id)}>
+                        +
+                      </button>
                     </div>
 
                     <button

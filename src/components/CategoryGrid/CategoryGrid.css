@@ -84,12 +84,20 @@
 
 
 .category-hover-item {
+  border: none;
+  background: transparent;
+
   font-size: 15px;
   color: black;
 
   margin-bottom: 15px;
 
   text-align: center;
+  cursor: pointer;
+}
+
+.category-hover-item:hover {
+  text-decoration: underline;
 }
 
 
