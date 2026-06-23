@@ -9,6 +9,8 @@ import LanguageSelector from "../LanguageSelector/LanguageSelector";
 import AuthModal from "../AuthModal/AuthModal";
 import SearchOverlay from "../SearchOverlay/SearchOverlay";
 
+
+import MyOrders from "../MyOrders/MyOrders";
 import "./Header.css";
 
 const accessories = [
@@ -94,8 +96,9 @@ const Header = ({
   openSearchCategory,
   
 }: HeaderProps) => {
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
+ const [isCartOpen, setIsCartOpen] = useState(false);
+const [isOrdersOpen, setIsOrdersOpen] = useState(false);
+const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
   const [showAuth, setShowAuth] = useState(false);
@@ -383,10 +386,15 @@ if (role === "admin") {
 
                    {!isAdmin && (
   <>
-    <button>
-      <InventoryIcon />
-      Мої замовлення
-    </button>
+    <button
+  onClick={() => {
+    setIsOrdersOpen(true);
+    setShowProfileMenu(false);
+  }}
+>
+  <InventoryIcon />
+  Мої замовлення
+</button>
 
     <button
       className="profile-menu-item cart-link"
@@ -397,6 +405,7 @@ if (role === "admin") {
     >
       🛒 Кошик
     </button>
+    
   </>
 )}
 
@@ -425,7 +434,11 @@ if (role === "admin") {
           <LanguageSelector />
         </div>
 
-        {isCartOpen && <Cart close={() => setIsCartOpen(false)} />}
+       {isCartOpen && <Cart close={() => setIsCartOpen(false)} />}
+
+{isOrdersOpen && (
+  <MyOrders close={() => setIsOrdersOpen(false)} />
+)}
       </header>
 
      {isAdminOpen && (
