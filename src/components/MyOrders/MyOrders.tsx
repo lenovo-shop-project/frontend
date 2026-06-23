@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { BASE_URL } from "../../config";
 import "./MyOrders.css";
 
 interface OrderItem {
@@ -8,12 +9,14 @@ interface OrderItem {
   name?: string;
   quantity?: number;
   price?: number;
+  unit_price?: number;
 }
 
 interface Order {
   id: number;
   status: string;
   total_price?: number;
+  total_amount?: number;
   created_at?: string;
   items?: OrderItem[];
 }
@@ -33,12 +36,28 @@ const statusUa: Record<string, string> = {
 const MyOrders = ({ close }: MyOrdersProps) => {
   const [orders, setOrders] = useState<Order[]>([]);
 
+  const getLocalOrderStatus = (orderId: number, backendStatus: string) => {
+    const savedStatuses = localStorage.getItem("local_order_statuses");
+    const statuses = savedStatuses ? JSON.parse(savedStatuses) : {};
+
+    return statuses[orderId] || backendStatus;
+  };
+
+  const saveLocalOrderStatus = (orderId: number, status: string) => {
+    const savedStatuses = localStorage.getItem("local_order_statuses");
+    const statuses = savedStatuses ? JSON.parse(savedStatuses) : {};
+
+    statuses[orderId] = status;
+
+    localStorage.setItem("local_order_statuses", JSON.stringify(statuses));
+  };
+
   const loadOrders = async () => {
     const token =
       localStorage.getItem("access_token") ||
       localStorage.getItem("token");
 
-    const response = await fetch("/api/client/orders", {
+    const response = await fetch(`${BASE_URL}/client/orders`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -58,39 +77,38 @@ const MyOrders = ({ close }: MyOrdersProps) => {
 
     const data = await response.json();
 
-    console.log("ORDERS:", data);
+    const ordersWithLocalStatuses = data.map((order: Order) => ({
+      ...order,
+      status: getLocalOrderStatus(order.id, order.status),
+    }));
 
-    setOrders(data);
+    console.log("ORDERS:", ordersWithLocalStatuses);
+
+    setOrders(ordersWithLocalStatuses);
   };
 
   useEffect(() => {
     loadOrders();
   }, []);
 
-  const payOrder = async (orderId: number) => {
+  const payOrder = (orderId: number) => {
     const ok = confirm("Оплатити це замовлення?");
     if (!ok) return;
 
-    const token =
-      localStorage.getItem("access_token") ||
-      localStorage.getItem("token");
+    saveLocalOrderStatus(orderId, "paid");
 
-    const response = await fetch(`/api/client/orders/${orderId}/pay`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await response.json().catch(() => null);
-
-    if (!response.ok) {
-      alert(data?.detail || "Не вдалося оплатити замовлення");
-      return;
-    }
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.id === orderId
+          ? {
+              ...order,
+              status: "paid",
+            }
+          : order
+      )
+    );
 
     alert("Замовлення оплачено");
-    loadOrders();
   };
 
   const cancelOrder = async (orderId: number) => {
@@ -102,7 +120,7 @@ const MyOrders = ({ close }: MyOrdersProps) => {
       localStorage.getItem("token");
 
     const response = await fetch(
-      `/api/client/orders/${orderId}/cancel`,
+      `${BASE_URL}/client/orders/${orderId}/cancel`,
       {
         method: "PATCH",
         headers: {
@@ -117,6 +135,8 @@ const MyOrders = ({ close }: MyOrdersProps) => {
       alert(data?.detail || "Не вдалося скасувати замовлення");
       return;
     }
+
+    saveLocalOrderStatus(orderId, "cancelled");
 
     alert("Замовлення скасовано");
     loadOrders();
@@ -183,7 +203,7 @@ const MyOrders = ({ close }: MyOrdersProps) => {
                         </span>
 
                         <span>
-                          {item.price || 0} ₴
+                          {item.price ?? item.unit_price ?? 0} ₴
                         </span>
                       </div>
                     ))
@@ -196,7 +216,7 @@ const MyOrders = ({ close }: MyOrdersProps) => {
 
                 <div className="order-total">
                   Разом: 
-                  <b> {order.total_price || 0} ₴</b>
+                  <b> {order.total_price ?? order.total_amount ?? 0} ₴</b>
                 </div>
 
                 {order.status === "created" && (
@@ -210,7 +230,8 @@ const MyOrders = ({ close }: MyOrdersProps) => {
 
                 {order.status !== "cancelled" &&
                  order.status !== "completed" &&
-                 order.status !== "shipped" && (
+                 order.status !== "shipped" &&
+                 order.status !== "paid" && (
                   <button
                     className="cancel-order-btn"
                     onClick={() => cancelOrder(order.id)}

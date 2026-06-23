@@ -8,7 +8,7 @@ import AdminPanel from "../AdminPanel/AdminPanel";
 import LanguageSelector from "../LanguageSelector/LanguageSelector";
 import AuthModal from "../AuthModal/AuthModal";
 import SearchOverlay from "../SearchOverlay/SearchOverlay";
-
+import { BASE_URL } from "../../config";
 
 import MyOrders from "../MyOrders/MyOrders";
 import "./Header.css";
@@ -33,25 +33,59 @@ const accessories = [
   "Операційні системи",
   "Офісні програми",
 ];
-const accessoriesSearchMap: Record<string, string> = {
-  "Додаткові сервіси": "сервіс",
-  "Миші та Килимки": "миша",
-  "Сумки, рюкзаки, чохли для ноутбуків": "сумка",
-  "Док-станції для ноутбуків": "док",
-  "Блоки живлення, зарядні пристрої для ноутбуків": "заряд",
-  "Акумулятори для ноутбуків": "акумулятор",
-  "Навушники": "навушники",
-  "Клавіатури": "клавіатура",
-  "Кабелі та перехідники": "кабель",
-  "Чохли для планшетів": "чохол",
-  "Зарядні пристрої для планшетів": "заряд",
-  "Стилуси": "стилус",
-  "Настільні кріплення": "кріплення",
-  "Акустика": "акустика",
-  "Веб-камери": "камера",
-  "Віртуальна реальність": "vr",
-  "Операційні системи": "windows",
-  "Офісні програми": "office",
+const accessoriesSearchMap: Record<
+  string,
+  { keyword: string; categoryId: number }
+> = {
+  "Додаткові сервіси": {
+    keyword: "сервіс",
+    categoryId: 6,
+  },
+
+  "Миші та Килимки": {
+    keyword: "миша",
+    categoryId: 6,
+  },
+
+  "Сумки, рюкзаки, чохли для ноутбуків": {
+    keyword: "сумка",
+    categoryId: 6,
+  },
+
+  "Док-станції для ноутбуків": {
+    keyword: "док",
+    categoryId: 6,
+  },
+
+  "Блоки живлення, зарядні пристрої для ноутбуків": {
+    keyword: "заряд",
+    categoryId: 6,
+  },
+
+  "Акумулятори для ноутбуків": {
+    keyword: "акумулятор",
+    categoryId: 6,
+  },
+
+  "Навушники": {
+    keyword: "навушники",
+    categoryId: 6,
+  },
+
+  "Клавіатури": {
+    keyword: "клавіатура",
+    categoryId: 6,
+  },
+
+  "Кабелі та перехідники": {
+    keyword: "кабель",
+    categoryId: 6,
+  },
+
+  "Чохли для планшетів": {
+    keyword: "чохол",
+    categoryId: 6,
+  },
 };
 
 const otherProducts = [
@@ -86,7 +120,12 @@ interface HeaderProps {
   openTabletsPage?: () => void;
   openMotorolaPage?: () => void;
   openPromotionsPage?: () => void;
-  openSearchCategory?: (title: string, keyword: string) => void;
+
+  openSearchCategory?: (
+    title: string,
+    keyword: string,
+    categoryId?: number
+  ) => void;
 }
 const Header = ({
   openLaptopsPage,
@@ -118,11 +157,11 @@ const [isAdminOpen, setIsAdminOpen] = useState(false);
     }
 
     try {
-      const response = await fetch("/api/auth/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(`${BASE_URL}/auth/me`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
 
       if (!response.ok) {
         setIsAdmin(false);
@@ -213,11 +252,14 @@ if (role === "admin") {
   <button
     key={item}
     onClick={() => {
-      openSearchCategory?.(
-        item,
-        accessoriesSearchMap[item] || item
-      );
-    }}
+  const search = accessoriesSearchMap[item];
+
+  openSearchCategory?.(
+    item,
+    search?.keyword || "",
+    search?.categoryId
+  );
+}}
   >
     {item}
   </button>

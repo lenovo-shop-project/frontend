@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { BASE_URL } from "../../config";
 import "./Cart.css";
 
 interface CartProps {
@@ -78,7 +79,7 @@ const Cart = ({ close }: CartProps) => {
       items: orderItems,
     });
 
-    const response = await fetch("/api/client/orders", {
+    const response = await fetch(`${BASE_URL}/client/orders`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

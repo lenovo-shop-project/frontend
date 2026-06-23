@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { BASE_URL } from "../../config";
 import "./AdminPanel.css";
 
 interface Product {
@@ -28,6 +29,7 @@ interface Order {
   id: number;
   status: string;
   total_price?: number;
+  total_amount?: number;
   user_id?: number;
   created_at?: string;
 }
@@ -85,7 +87,9 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
   const [userSearch, setUserSearch] = useState("");
   const [orderSearch, setOrderSearch] = useState("");
 
-  const token = localStorage.getItem("token");
+  const token =
+    localStorage.getItem("access_token") ||
+    localStorage.getItem("token");
 
   const authHeaders = {
     Authorization: `Bearer ${token}`,
@@ -99,7 +103,7 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
   };
 
   const loadProducts = async () => {
-    const response = await fetch("/api/admin/products", {
+    const response = await fetch(`${BASE_URL}/admin/products`, {
       headers: authHeaders,
     });
 
@@ -113,7 +117,7 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
   };
 
   const loadCategories = async () => {
-    const response = await fetch("/api/admin/categories", {
+    const response = await fetch(`${BASE_URL}/admin/categories`, {
       headers: authHeaders,
     });
 
@@ -131,7 +135,7 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
   };
 
   const loadUsers = async () => {
-    const response = await fetch("/api/admin/users", {
+    const response = await fetch(`${BASE_URL}/admin/users`, {
       headers: authHeaders,
     });
 
@@ -145,7 +149,7 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
   };
 
   const loadOrders = async () => {
-    const response = await fetch("/api/admin/orders", {
+    const response = await fetch(`${BASE_URL}/admin/orders`, {
       headers: authHeaders,
     });
 
@@ -155,11 +159,20 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
     }
 
     const data = await response.json();
-    setOrders(data);
+
+    const savedStatuses = localStorage.getItem("local_order_statuses");
+    const statuses = savedStatuses ? JSON.parse(savedStatuses) : {};
+
+    const ordersWithLocalStatuses = data.map((order: Order) => ({
+      ...order,
+      status: statuses[order.id] || order.status,
+    }));
+
+    setOrders(ordersWithLocalStatuses);
   };
 
   const loadReviews = async () => {
-    const response = await fetch("/api/admin/reviews", {
+    const response = await fetch(`${BASE_URL}/admin/reviews`, {
       headers: authHeaders,
     });
 
@@ -219,8 +232,8 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
     };
 
     const url = editingId
-      ? `/api/admin/products/${editingId}`
-      : "/api/admin/products";
+      ? `${BASE_URL}/admin/products/${editingId}`
+      : `${BASE_URL}/admin/products`;
 
     const method = editingId ? "PATCH" : "POST";
 
@@ -261,8 +274,8 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
 
   const toggleProduct = async (product: Product) => {
     const url = product.is_available
-      ? `/api/admin/products/${product.id}/deactivate`
-      : `/api/admin/products/${product.id}/activate`;
+      ? `${BASE_URL}/admin/products/${product.id}/deactivate`
+      : `${BASE_URL}/admin/products/${product.id}/activate`;
 
     const response = await fetch(url, {
       method: "PATCH",
@@ -287,7 +300,7 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
       return;
     }
 
-    const response = await fetch("/api/admin/categories", {
+    const response = await fetch(`${BASE_URL}/admin/categories`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -312,16 +325,44 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
   };
 
   const changeOrderStatus = async (orderId: number, status: string) => {
-    const response = await fetch(`/api/admin/orders/${orderId}/status`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        ...authHeaders,
-      },
-      body: JSON.stringify({
-        status,
-      }),
-    });
+    const savedStatuses = localStorage.getItem("local_order_statuses");
+    const localStatuses = savedStatuses ? JSON.parse(savedStatuses) : {};
+
+    const currentOrder = orders.find((order) => order.id === orderId);
+
+    const isLocallyPaid =
+      currentOrder?.status === "paid" ||
+      localStatuses[orderId] === "paid";
+
+    const sendStatus = async (newStatus: string) => {
+      return await fetch(`${BASE_URL}/admin/orders/${orderId}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          ...authHeaders,
+        },
+        body: JSON.stringify({
+          status: newStatus,
+        }),
+      });
+    };
+
+    let response: Response;
+
+    if (isLocallyPaid && status !== "paid") {
+      const payResponse = await sendStatus("paid");
+
+      if (!payResponse.ok) {
+        const payData = await payResponse.json().catch(() => null);
+        console.log("ORDER PAY ERROR:", payData);
+        alert(payData?.detail || "Не вдалося спочатку поставити Оплачене");
+        return;
+      }
+
+      response = await sendStatus(status);
+    } else {
+      response = await sendStatus(status);
+    }
 
     const data = await response.json().catch(() => null);
 
@@ -329,6 +370,14 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
       console.log("ORDER STATUS ERROR:", data);
       alert(data?.detail || "Не вдалося змінити статус замовлення");
       return;
+    }
+
+    if (localStatuses[orderId]) {
+      delete localStatuses[orderId];
+      localStorage.setItem(
+        "local_order_statuses",
+        JSON.stringify(localStatuses)
+      );
     }
 
     alert("Статус замовлення змінено");
@@ -339,7 +388,7 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
     const confirmDelete = confirm("Видалити цей відгук?");
     if (!confirmDelete) return;
 
-    const response = await fetch(`/api/admin/reviews/${reviewId}`, {
+    const response = await fetch(`${BASE_URL}/admin/reviews/${reviewId}`, {
       method: "DELETE",
       headers: authHeaders,
     });
@@ -604,20 +653,22 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
               <div className="admin-table-row order-row" key={order.id}>
                 <span>#{order.id}</span>
                 <span>Користувач: {order.user_id ?? "-"}</span>
-                <span>Сума: {order.total_price ?? 0} ₴</span>
+                <span>
+                  Сума: {order.total_price ?? order.total_amount ?? 0} ₴
+                </span>
 
                 <select
-  value={order.status}
-  onChange={(e) =>
-    changeOrderStatus(order.id, e.target.value)
-  }
->
-  <option value="created">Створене</option>
-  <option value="paid">Оплачене</option>
-  <option value="shipped">Відправлене</option>
-  <option value="completed">Завершене</option>
-  <option value="cancelled">Скасоване</option>
-</select>
+                  value={order.status}
+                  onChange={(e) =>
+                    changeOrderStatus(order.id, e.target.value)
+                  }
+                >
+                  <option value="created">Створене</option>
+                  <option value="paid">Оплачене</option>
+                  <option value="shipped">Відправлене</option>
+                  <option value="completed">Завершене</option>
+                  <option value="cancelled">Скасоване</option>
+                </select>
               </div>
             ))}
           </div>

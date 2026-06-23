@@ -2,97 +2,17 @@ import { useState, useEffect } from "react";
 import ProductCard from "../ProductCard/ProductCard";
 import type { Product } from "../ProductCard/ProductCard";
 import "./ProductGrid.css";
+import { BASE_URL } from "../../config";
 
 type FilterType = "default" | "tablet" | "motorola" | "simple";
 
 interface ProductGridProps {
   title?: string;
   categoryKeyword?: string;
+  categoryId?: number;
   showPagination?: boolean;
   filterType?: FilterType;
 }
-
-const getFilterList = (filterType: FilterType) => {
-  if (filterType === "simple") {
-    return [];
-  }
-
-  if (filterType === "motorola") {
-    return [
-      "Серія",
-      "Модель",
-      "Дисплей",
-      "Діагональ екрана",
-      "Тип матриці",
-      "Макс. роздільна здатність",
-      "Захист",
-      "Процесор",
-      "Пам'ять",
-      "ПЗП Обсяг, ГБ",
-      "Бездротові мережі",
-      "NFC-чіп",
-      "Модуль GPS",
-      "Інтерфейси",
-      "Датчики",
-      "Тип",
-      "Ємність акумулятора, мА*год",
-      "Рік випуску",
-      "Версія ОС",
-      "Пило-, вологозахист",
-    ];
-  }
-
-  if (filterType === "tablet") {
-    return [
-      "Модель",
-      "Дисплей",
-      "Діагональ екрана",
-      "Тип матриці",
-      "Роздільна здатність екрану",
-      "Частота оновлення",
-      "Покриття екрану",
-      "Захист",
-      "Датчики",
-      "Процесор",
-      "Пам'ять",
-      "К-ть ядер, шт.",
-      "Частота, ГГц",
-      "ПЗП Обсяг, ГБ",
-      "Бездротові мережі",
-      "NFC-чіп",
-      "GPS-модуль",
-      "Акумулятор",
-      "Тип",
-      "Ємність, мА*год",
-      "Час роботи",
-      "Камера",
-      "Тильна, Мпікс",
-      "WEB-камера, Мпікс",
-      "Інше",
-      "Наявність стилуса",
-      "Док-станція",
-      "Операційна система",
-      "Версія ОС",
-    ];
-  }
-
-  return [
-    "Серія",
-    "Модель",
-    "Процесор",
-    "Відеоадаптер",
-    "Пам'ять",
-    "Дисплей",
-    "Накопичувач",
-    "AI процесор",
-    "Предустановлена ОС",
-    "Автономність",
-    "Клавіатура",
-    "Бездротові мережі",
-    "Корпус",
-    "Розміри",
-  ];
-};
 
 const getLineOptions = (filterType: FilterType) => {
   if (filterType === "simple") {
@@ -113,12 +33,13 @@ const getLineOptions = (filterType: FilterType) => {
 const ProductGrid = ({
   title = "Топ продажів",
   categoryKeyword = "",
+  categoryId,
   showPagination = false,
   filterType = "default",
 }: ProductGridProps) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
-  const [visibleCount, setVisibleCount] = useState(12);
+  const [visibleCount, setVisibleCount] = useState(10);
 
   const [onlyAvailable, setOnlyAvailable] = useState(false);
   const [sort, setSort] = useState("default");
@@ -128,7 +49,7 @@ const ProductGrid = ({
   const [maxPrice, setMaxPrice] = useState("");
 
   useEffect(() => {
-    fetch("/api/client/products")
+    fetch(`${BASE_URL}/client/products`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Ошибка при получении данных с сервера");
@@ -137,7 +58,15 @@ const ProductGrid = ({
         return res.json();
       })
       .then((data) => {
-        setProducts(data);
+        if (!showPagination && title === "Топ продажів") {
+          const randomProducts = [...data]
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 10);
+
+          setProducts(randomProducts);
+        } else {
+          setProducts(data);
+        }
       })
       .catch((err) => {
         console.error("Критическая ошибка интеграции:", err);
@@ -147,6 +76,15 @@ const ProductGrid = ({
   let filteredProducts = products.filter((product: any) => {
     const name = String(product.name || product.title || "").toLowerCase();
     const description = String(product.description || "").toLowerCase();
+
+    const productCategoryId =
+      product.category_id ??
+      product.categoryId ??
+      product.category?.id;
+
+    if (categoryId && Number(productCategoryId) !== Number(categoryId)) {
+      return false;
+    }
 
     if (categoryKeyword) {
       const keyword = categoryKeyword.toLowerCase();
@@ -193,7 +131,6 @@ const ProductGrid = ({
     : filteredProducts.slice(0, visibleCount);
 
   const lineOptions = getLineOptions(filterType);
-  const filterList = getFilterList(filterType);
 
   return (
     <section className="product-section">
@@ -267,14 +204,6 @@ const ProductGrid = ({
                 ))}
               </div>
             )}
-
-            {filterType !== "simple" &&
-              filterList.map((item) => (
-                <div className="filter-closed" key={item}>
-                  {item}
-                  <span>+</span>
-                </div>
-              ))}
           </aside>
 
           <div className="category-products">

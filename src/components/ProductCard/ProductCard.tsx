@@ -3,6 +3,7 @@ import BalanceIcon from "@mui/icons-material/Balance";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import StarIcon from "@mui/icons-material/Star";
 import ChatIcon from "@mui/icons-material/Chat";
+import { BASE_URL } from "../../config";
 import "./ProductCard.css";
 
 export interface Product {
@@ -22,7 +23,7 @@ export interface Product {
   isSale?: boolean;
   isHit?: boolean;
   bonuses?: number;
-description?: string | null;
+  description?: string | null;
   is_available?: boolean;
   isAvailable?: boolean;
 }
@@ -39,25 +40,25 @@ const ProductCard = ({ product }: Props) => {
   const addToCart = async () => {
     const token = localStorage.getItem("token");
 
-if (!token) {
-  alert("Спочатку увійдіть в акаунт");
-  return;
-}
+    if (!token) {
+      alert("Спочатку увійдіть в акаунт");
+      return;
+    }
 
-const response = await fetch("/api/auth/me", {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-});
+    const response = await fetch(`${BASE_URL}/auth/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-const user = await response.json();
+    const user = await response.json();
 
-const role = String(user.role || "").toLowerCase();
+    const role = String(user.role || "").toLowerCase();
 
-if (role === "admin" || role === "userrole.admin") {
-  alert("Адмін не може додавати товари в кошик");
-  return;
-}
+    if (role === "admin" || role === "userrole.admin") {
+      alert("Адмін не може додавати товари в кошик");
+      return;
+    }
 
     if (!productAvailable) {
       alert("Цього товару немає в наявності");
@@ -130,7 +131,7 @@ if (role === "admin" || role === "userrole.admin") {
           </div>
         </div>
 
-             <button className="cart-button" onClick={addToCart}>
+        <button className="cart-button" onClick={addToCart}>
           <ShoppingCartIcon />
         </button>
       </div>

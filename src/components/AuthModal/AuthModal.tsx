@@ -1,6 +1,7 @@
 import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { BASE_URL } from "../../config";
 import "./AuthModal.css";
 
 interface Props {
@@ -19,7 +20,9 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
   const submit = async () => {
     try {
       const url =
-        tab === "login" ? "/api/auth/login" : "/api/auth/register";
+        tab === "login"
+          ? `${BASE_URL}/auth/login`
+          : `${BASE_URL}/auth/register`;
 
       const body =
         tab === "login"
@@ -54,7 +57,7 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
       if (tab === "login") {
         localStorage.setItem("token", data.access_token);
 
-        const meResponse = await fetch("/api/auth/me", {
+        const meResponse = await fetch(`${BASE_URL}/auth/me`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${data.access_token}`,

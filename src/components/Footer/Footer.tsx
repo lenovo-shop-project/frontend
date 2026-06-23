@@ -10,7 +10,11 @@ interface FooterProps {
   openReturnExchangePage?: () => void;
   openBenefitsPage?: () => void;
   openContactsPage?: () => void;
-  openSearchCategory?: (title: string, keyword: string) => void;
+  openSearchCategory?: (
+    title: string,
+    keyword: string,
+    categoryId?: number
+  ) => void;
 }
 
 const Footer = ({
@@ -58,34 +62,34 @@ const Footer = ({
               <span>Ноутбуки</span>
             </div>
 
-            <a onClick={() => openSearchCategory?.("Ігрові ноутбуки", "ігровий")}>
+            <a onClick={() => openSearchCategory?.("Ігрові ноутбуки", "ігровий", 1)}>
               Ігрові ноутбуки
             </a>
-            <a onClick={() => openSearchCategory?.("Для бізнесу", "бізнес")}>
+            <a onClick={() => openSearchCategory?.("Для бізнесу", "бізнес", 1)}>
               Для бізнесу
             </a>
-            <a onClick={() => openSearchCategory?.("Тонкі і легкі", "тонкий")}>
+            <a onClick={() => openSearchCategory?.("Тонкі і легкі", "тонкий", 1)}>
               Тонкі і легкі
             </a>
-            <a onClick={() => openSearchCategory?.("Для роботи та навчання", "робота")}>
+            <a onClick={() => openSearchCategory?.("Для роботи та навчання", "робота", 1)}>
               Для роботи та навчання
             </a>
-            <a onClick={() => openSearchCategory?.("Мультимедійні", "мультимедіа")}>
+            <a onClick={() => openSearchCategory?.("Мультимедійні", "мультимедіа", 1)}>
               Мультимедійні
             </a>
-            <a onClick={() => openSearchCategory?.("ThinkPad", "thinkpad")}>
+            <a onClick={() => openSearchCategory?.("ThinkPad", "thinkpad", 1)}>
               ThinkPad
             </a>
-            <a onClick={() => openSearchCategory?.("Legion", "legion")}>
+            <a onClick={() => openSearchCategory?.("Legion", "legion", 1)}>
               Legion
             </a>
-            <a onClick={() => openSearchCategory?.("Yoga", "yoga")}>
+            <a onClick={() => openSearchCategory?.("Yoga", "yoga", 1)}>
               Yoga
             </a>
-            <a onClick={() => openSearchCategory?.("IdeaPad", "ideapad")}>
+            <a onClick={() => openSearchCategory?.("IdeaPad", "ideapad", 1)}>
               IdeaPad
             </a>
-            <a onClick={() => openSearchCategory?.("Ультрабуки", "ультрабук")}>
+            <a onClick={() => openSearchCategory?.("Ультрабуки", "ультрабук", 1)}>
               Ультрабуки
             </a>
           </div>
@@ -96,16 +100,16 @@ const Footer = ({
               <span>Планшети</span>
             </div>
 
-            <a onClick={() => openSearchCategory?.("Трансформери", "трансформер")}>
+            <a onClick={() => openSearchCategory?.("Трансформери", "трансформер", 2)}>
               Трансформери
             </a>
-            <a onClick={() => openSearchCategory?.("Планшети з 3G", "3g")}>
+            <a onClick={() => openSearchCategory?.("Планшети з 3G", "3g", 2)}>
               Планшети з 3G
             </a>
-            <a onClick={() => openSearchCategory?.("Планшети Windows", "windows")}>
+            <a onClick={() => openSearchCategory?.("Планшети Windows", "windows", 2)}>
               Планшети на Windows
             </a>
-            <a onClick={() => openSearchCategory?.("Планшети Android", "android")}>
+            <a onClick={() => openSearchCategory?.("Планшети Android", "android", 2)}>
               Планшети на Android
             </a>
           </div>
@@ -113,7 +117,7 @@ const Footer = ({
           <div className="footer-column">
             <div
               className="footer-title"
-              onClick={() => openSearchCategory?.("Смартфони Motorola", "motorola")}
+              onClick={() => openSearchCategory?.("Смартфони Motorola", "motorola", 3)}
             >
               <PhoneIphoneIcon />
               <span>Смартфони</span>
@@ -121,7 +125,7 @@ const Footer = ({
 
             <div
               className="footer-title second"
-              onClick={() => openSearchCategory?.("Моноблоки", "моноблок")}
+              onClick={() => openSearchCategory?.("Моноблоки", "моноблок", 9)}
             >
               <DesktopWindowsIcon />
               <span>Моноблоки</span>
@@ -129,7 +133,7 @@ const Footer = ({
 
             <div
               className="footer-title second"
-              onClick={() => openSearchCategory?.("Настільні ПК", "пк")}
+              onClick={() => openSearchCategory?.("Настільні ПК", "пк", 10)}
             >
               <DesktopWindowsIcon />
               <span>Настільні ПК</span>
@@ -137,7 +141,7 @@ const Footer = ({
 
             <div
               className="footer-title second"
-              onClick={() => openSearchCategory?.("Монітори", "монітор")}
+              onClick={() => openSearchCategory?.("Монітори", "монітор", 5)}
             >
               <DesktopWindowsIcon />
               <span>Монітори</span>
@@ -145,7 +149,7 @@ const Footer = ({
 
             <div
               className="footer-title second"
-              onClick={() => openSearchCategory?.("Аксесуари", "аксесуар")}
+              onClick={() => openSearchCategory?.("Аксесуари", "", 6)}
             >
               <CardGiftcardIcon />
               <span>Аксесуари</span>
