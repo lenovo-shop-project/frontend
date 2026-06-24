@@ -14,28 +14,62 @@ import BenefitsPage from "./pages/BenefitsPage/BenefitsPage";
 import Footer from "./components/Footer/Footer";
 import RightFixedButtons from "./components/RightFixedButtons/RightFixedButtons";
 import ReturnExchangePage from "./pages/ReturnExchangePage/ReturnExchangePage";
+import ContactsPage from "./pages/ContactsPage/ContactsPage";
 
 import "./App.css";
-import ContactsPage from "./pages/ContactsPage/ContactsPage";
+
 function App() {
-  const [page, setPage] =
-   useState<
-  "home" | "benefits" | "laptops" | "tablets" | "motorola" | "promotions" | "deliveryPayment" | "searchCategory" |
- "returnExchange"|"contacts"
->("home");
-const footerProps = {
-  openDeliveryPaymentPage: () => setPage("deliveryPayment"),
-  openReturnExchangePage: () => setPage("returnExchange"),
-  openBenefitsPage: () => setPage("benefits"),
-  openContactsPage: () => setPage("contacts"),
-  openSearchCategory: (title: string, keyword: string) => {
-  setCategoryTitle(title);
-  setCategoryKeyword(keyword);
-  setPage("searchCategory");
-},
-};
-const [categoryTitle, setCategoryTitle] = useState("");
-const [categoryKeyword, setCategoryKeyword] = useState("");
+  const [page, setPage] = useState<
+    | "home"
+    | "benefits"
+    | "laptops"
+    | "tablets"
+    | "motorola"
+    | "promotions"
+    | "deliveryPayment"
+    | "searchCategory"
+    | "returnExchange"
+    | "contacts"
+  >("home");
+
+  const [categoryTitle, setCategoryTitle] = useState("");
+  const [categoryKeyword, setCategoryKeyword] = useState("");
+  const [categoryId, setCategoryId] = useState<number | undefined>(undefined);
+
+  const openSearchCategory = (
+    title: string,
+    keyword: string,
+    id?: number
+  ) => {
+    setCategoryTitle(title);
+    setCategoryKeyword(keyword);
+    setCategoryId(id);
+    setPage("searchCategory");
+  };
+
+  const openSiteSearch = (value: string) => {
+    setCategoryTitle(`Пошук: ${value}`);
+    setCategoryKeyword(value);
+    setCategoryId(undefined);
+    setPage("searchCategory");
+  };
+
+  const headerProps = {
+    openLaptopsPage: () => setPage("laptops"),
+    openTabletsPage: () => setPage("tablets"),
+    openMotorolaPage: () => setPage("motorola"),
+    openPromotionsPage: () => setPage("promotions"),
+    openSearchCategory,
+  };
+
+  const footerProps = {
+    openDeliveryPaymentPage: () => setPage("deliveryPayment"),
+    openReturnExchangePage: () => setPage("returnExchange"),
+    openBenefitsPage: () => setPage("benefits"),
+    openContactsPage: () => setPage("contacts"),
+    openSearchCategory,
+  };
+
   if (page === "benefits") {
     return (
       <>
@@ -43,136 +77,77 @@ const [categoryKeyword, setCategoryKeyword] = useState("");
         <RightFixedButtons />
         <TopPromoSlider />
 
-        <Header
-          openLaptopsPage={() => setPage("laptops")}
-          openTabletsPage={() => setPage("tablets")}
-          openPromotionsPage={() => setPage("promotions")}
-          openSearchCategory={(title, keyword) => {
-  setCategoryTitle(title);
-  setCategoryKeyword(keyword);
-  setPage("searchCategory");
-}}
-          
-        />
+        <Header {...headerProps} />
 
         <BenefitsPage goHome={() => setPage("home")} />
       </>
     );
   }
+
   if (page === "returnExchange") {
-  return (
-    <>
-      <LeftBanner />
-      <RightFixedButtons />
-      <TopPromoSlider />
+    return (
+      <>
+        <LeftBanner />
+        <RightFixedButtons />
+        <TopPromoSlider />
 
-      <Header
-        openLaptopsPage={() => setPage("laptops")}
-        openTabletsPage={() => setPage("tablets")}
-        openMotorolaPage={() => setPage("motorola")}
-        openPromotionsPage={() => setPage("promotions")}
-      />
+        <Header {...headerProps} />
 
-      <ReturnExchangePage
-        goHome={() => setPage("home")}
-        openDeliveryPaymentPage={() =>
-          setPage("deliveryPayment")
-        }
-      />
+        <ReturnExchangePage
+          goHome={() => setPage("home")}
+          openDeliveryPaymentPage={() => setPage("deliveryPayment")}
+        />
 
-     <Footer {...footerProps} 
-        openDeliveryPaymentPage={() =>
-          setPage("deliveryPayment")
-        }
-        openReturnExchangePage={() =>
-          setPage("returnExchange")
-        }
-      />
-    </>
-  );
-}
-if (page === "contacts") {
-  return (
-    <>
-      <LeftBanner />
-      <RightFixedButtons />
-      <TopPromoSlider />
+        <Footer {...footerProps} />
+      </>
+    );
+  }
 
-      <Header
-        openLaptopsPage={() => setPage("laptops")}
-        openTabletsPage={() => setPage("tablets")}
-        openMotorolaPage={() => setPage("motorola")}
-        openPromotionsPage={() => setPage("promotions")}
-      />
+  if (page === "contacts") {
+    return (
+      <>
+        <LeftBanner />
+        <RightFixedButtons />
+        <TopPromoSlider />
 
-      <ContactsPage
-        goHome={() => setPage("home")}
-      />
+        <Header {...headerProps} />
 
-      <Footer {...footerProps} 
-        openDeliveryPaymentPage={() =>
-          setPage("deliveryPayment")
-        }
+        <ContactsPage goHome={() => setPage("home")} />
 
-        openReturnExchangePage={() =>
-          setPage("returnExchange")
-        }
+        <Footer {...footerProps} />
+      </>
+    );
+  }
 
-        openBenefitsPage={() =>
-          setPage("benefits")
-        }
-
-        openContactsPage={() =>
-          setPage("contacts")
-        }
-      />
-
-    </>
-  );
-}
   if (page === "deliveryPayment") {
-  return (
-    <>
-      <LeftBanner />
-      <RightFixedButtons />
-      <TopPromoSlider />
+    return (
+      <>
+        <LeftBanner />
+        <RightFixedButtons />
+        <TopPromoSlider />
 
-      <Header
-        openLaptopsPage={() => setPage("laptops")}
-        openTabletsPage={() => setPage("tablets")}
-        openMotorolaPage={() => setPage("motorola")}
-        openPromotionsPage={() => setPage("promotions")}
-      />
+        <Header {...headerProps} />
 
-      <DeliveryPaymentPage goHome={() => setPage("home")} />
+        <DeliveryPaymentPage goHome={() => setPage("home")} />
 
-      <Footer {...footerProps}  openDeliveryPaymentPage={() => setPage("deliveryPayment")} />
-    </>
-  );
-}
+        <Footer {...footerProps} />
+      </>
+    );
+  }
+
   if (page === "promotions") {
-  return (
-    <>
-      <LeftBanner />
-      <RightFixedButtons />
-      <TopPromoSlider />
+    return (
+      <>
+        <LeftBanner />
+        <RightFixedButtons />
+        <TopPromoSlider />
 
-      <Header
-        openLaptopsPage={() => setPage("laptops")}
-        openTabletsPage={() => setPage("tablets")}
-        openPromotionsPage={() => setPage("promotions")}
-        openSearchCategory={(title, keyword) => {
-  setCategoryTitle(title);
-  setCategoryKeyword(keyword);
-  setPage("searchCategory");
-}}
+        <Header {...headerProps} />
 
-      />
-
-      <PromotionsPage goHome={() => setPage("home")} />
-    </>
-  );
-}
+        <PromotionsPage goHome={() => setPage("home")} />
+      </>
+    );
+  }
 
   if (page === "laptops") {
     return (
@@ -181,39 +156,21 @@ if (page === "contacts") {
         <RightFixedButtons />
         <TopPromoSlider />
 
-        <Header
-          openLaptopsPage={() => setPage("laptops")}
-          openTabletsPage={() => setPage("tablets")}
-          openMotorolaPage={() => setPage("motorola")}
-          openPromotionsPage={() => setPage("promotions")}
-          openSearchCategory={(title, keyword) => {
-  setCategoryTitle(title);
-  setCategoryKeyword(keyword);
-  setPage("searchCategory");
-}}
-        />
+        <Header {...headerProps} />
 
         <main className="page-content">
           <div className="container">
-            <button
-              className="back-home-btn"
-              onClick={() => setPage("home")}
-            >
+            <button className="back-home-btn" onClick={() => setPage("home")}>
               ← На головну
             </button>
 
-            <MainSearch
-  onSearch={(value) => {
-    setCategoryTitle(`Пошук: ${value}`);
-    setCategoryKeyword(value);
-    setPage("searchCategory");
-  }}
-/>
+            <MainSearch onSearch={openSiteSearch} />
+
             <Banners />
 
             <ProductGrid
               title="Ноутбуки"
-              categoryKeyword="ноутбук"
+              categoryId={1}
               showPagination={true}
             />
           </div>
@@ -223,106 +180,73 @@ if (page === "contacts") {
       </>
     );
   }
+
   if (page === "motorola") {
-  return (
-    <>
-      <LeftBanner />
-      <RightFixedButtons />
-      <TopPromoSlider />
+    return (
+      <>
+        <LeftBanner />
+        <RightFixedButtons />
+        <TopPromoSlider />
 
-      <Header
-        openLaptopsPage={() => setPage("laptops")}
-        openTabletsPage={() => setPage("tablets")}
-        openMotorolaPage={() => setPage("motorola")}
-        openPromotionsPage={() => setPage("promotions")}
-        openSearchCategory={(title, keyword) => {
-  setCategoryTitle(title);
-  setCategoryKeyword(keyword);
-  setPage("searchCategory");
-}}
-      />
+        <Header {...headerProps} />
 
-      <main className="page-content">
-        <div className="container">
-          <button
-            className="back-home-btn"
-            onClick={() => setPage("home")}
-          >
-            ← На головну
-          </button>
+        <main className="page-content">
+          <div className="container">
+            <button className="back-home-btn" onClick={() => setPage("home")}>
+              ← На головну
+            </button>
 
-          <MainSearch
-  onSearch={(value) => {
-    setCategoryTitle(`Пошук: ${value}`);
-    setCategoryKeyword(value);
-    setPage("searchCategory");
-  }}
-/>
-          <Banners />
+            <MainSearch onSearch={openSiteSearch} />
 
-          <ProductGrid
-  title="Смартфони Motorola"
-  categoryKeyword="motorola"
-  showPagination={true}
-  filterType="motorola"
-/>
-        </div>
+            <Banners />
 
-        <Footer {...footerProps} />
-      </main>
-    </>
-  );
-}
-if (page === "searchCategory") {
-  return (
-    <>
-      <LeftBanner />
-      <RightFixedButtons />
-      <TopPromoSlider />
+            <ProductGrid
+              title="Смартфони Motorola"
+              categoryId={3}
+              showPagination={true}
+              filterType="motorola"
+            />
+          </div>
 
-      <Header
-        openLaptopsPage={() => setPage("laptops")}
-        openTabletsPage={() => setPage("tablets")}
-        openMotorolaPage={() => setPage("motorola")}
-        openPromotionsPage={() => setPage("promotions")}
-        openSearchCategory={(title, keyword) => {
-          setCategoryTitle(title);
-          setCategoryKeyword(keyword);
-          setPage("searchCategory");
-        }}
-      />
+          <Footer {...footerProps} />
+        </main>
+      </>
+    );
+  }
 
-      <main className="page-content">
-        <div className="container">
-          <button
-            className="back-home-btn"
-            onClick={() => setPage("home")}
-          >
-            ← На головну
-          </button>
+  if (page === "searchCategory") {
+    return (
+      <>
+        <LeftBanner />
+        <RightFixedButtons />
+        <TopPromoSlider />
 
-          <MainSearch
-  onSearch={(value) => {
-    setCategoryTitle(`Пошук: ${value}`);
-    setCategoryKeyword(value);
-    setPage("searchCategory");
-  }}
-/>
-          <Banners />
+        <Header {...headerProps} />
 
-          <ProductGrid
-  title={categoryTitle}
-  categoryKeyword={categoryKeyword}
-  showPagination={true}
-  filterType="simple"
-/>
-        </div>
+        <main className="page-content">
+          <div className="container">
+            <button className="back-home-btn" onClick={() => setPage("home")}>
+              ← На головну
+            </button>
 
-        <Footer {...footerProps} />
-      </main>
-    </>
-  );
-}
+            <MainSearch onSearch={openSiteSearch} />
+
+            <Banners />
+
+            <ProductGrid
+              title={categoryTitle}
+              categoryKeyword={categoryKeyword}
+              categoryId={categoryId}
+              showPagination={true}
+              filterType="simple"
+            />
+          </div>
+
+          <Footer {...footerProps} />
+        </main>
+      </>
+    );
+  }
 
   if (page === "tablets") {
     return (
@@ -331,42 +255,24 @@ if (page === "searchCategory") {
         <RightFixedButtons />
         <TopPromoSlider />
 
-        <Header
-          openLaptopsPage={() => setPage("laptops")}
-          openTabletsPage={() => setPage("tablets")}
-          openMotorolaPage={() => setPage("motorola")}
-          openPromotionsPage={() => setPage("promotions")}
-          openSearchCategory={(title, keyword) => {
-  setCategoryTitle(title);
-  setCategoryKeyword(keyword);
-  setPage("searchCategory");
-}}
-        />
+        <Header {...headerProps} />
 
         <main className="page-content">
           <div className="container">
-            <button
-              className="back-home-btn"
-              onClick={() => setPage("home")}
-            >
+            <button className="back-home-btn" onClick={() => setPage("home")}>
               ← На головну
             </button>
 
-            <MainSearch
-  onSearch={(value) => {
-    setCategoryTitle(`Пошук: ${value}`);
-    setCategoryKeyword(value);
-    setPage("searchCategory");
-  }}
-/>
+            <MainSearch onSearch={openSiteSearch} />
+
             <Banners />
 
             <ProductGrid
-  title="Планшети"
-  categoryKeyword="планшет"
-  showPagination={true}
-  filterType="tablet"
-/>
+              title="Планшети"
+              categoryId={2}
+              showPagination={true}
+              filterType="tablet"
+            />
           </div>
 
           <Footer {...footerProps} />
@@ -374,7 +280,6 @@ if (page === "searchCategory") {
       </>
     );
   }
-  
 
   return (
     <>
@@ -382,35 +287,16 @@ if (page === "searchCategory") {
       <RightFixedButtons />
       <TopPromoSlider />
 
-      <Header
-        openLaptopsPage={() => setPage("laptops")}
-        openTabletsPage={() => setPage("tablets")}
-        openMotorolaPage={() => setPage("motorola")}
-        openPromotionsPage={() => setPage("promotions")}
-        openSearchCategory={(title, keyword) => {
-  setCategoryTitle(title);
-  setCategoryKeyword(keyword);
-  setPage("searchCategory");
-}}
-      />
+      <Header {...headerProps} />
 
       <main className="page-content">
         <div className="container">
-          <MainSearch
-  onSearch={(value) => {
-    setCategoryTitle(`Пошук: ${value}`);
-    setCategoryKeyword(value);
-    setPage("searchCategory");
-  }}
-/>
+          <MainSearch onSearch={openSiteSearch} />
+
           <Banners />
-          <CategoryGrid
-  openSearchCategory={(title, keyword) => {
-    setCategoryTitle(title);
-    setCategoryKeyword(keyword);
-    setPage("searchCategory");
-  }}
-/>
+
+          <CategoryGrid openSearchCategory={openSearchCategory} />
+
           <ProductGrid />
 
           <Benefits openBenefitsPage={() => setPage("benefits")} />
@@ -418,23 +304,7 @@ if (page === "searchCategory") {
           <LenovoInfo />
         </div>
 
-       <Footer {...footerProps} 
- openDeliveryPaymentPage={() =>
-   setPage("deliveryPayment")
- }
-
- openReturnExchangePage={() =>
-   setPage("returnExchange")
- }
-
- openBenefitsPage={() =>
-   setPage("benefits")
- }
-
- openContactsPage={() =>
-   setPage("contacts")
- }
-/>
+        <Footer {...footerProps} />
       </main>
     </>
   );
