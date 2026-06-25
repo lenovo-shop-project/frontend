@@ -5,7 +5,7 @@ import TopPromoSlider from "./components/TopPromoSlider/TopPromoSlider";
 import Header from "./components/Header/Header";
 import DeliveryPaymentPage from "./pages/DeliveryPaymentPage/DeliveryPaymentPage";
 import MainSearch from "./components/MainSearch/MainSearch";
-import Banners from "./components/Banners/Banners";
+
 import CategoryGrid from "./components/CategoryGrid/CategoryGrid";
 import ProductGrid from "./components/ProductGrid/ProductGrid";
 import Benefits from "./components/Benefits/Benefits";
@@ -15,7 +15,7 @@ import Footer from "./components/Footer/Footer";
 import RightFixedButtons from "./components/RightFixedButtons/RightFixedButtons";
 import ReturnExchangePage from "./pages/ReturnExchangePage/ReturnExchangePage";
 import ContactsPage from "./pages/ContactsPage/ContactsPage";
-
+import Banners from "./components/Banners/Banners";
 import "./App.css";
 
 function App() {

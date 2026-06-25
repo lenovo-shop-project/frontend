@@ -3,13 +3,13 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import "./Banners.css";
 
-import banner11 from "../../assets/images/1.1.png";
-import banner12 from "../../assets/images/1.2.png";
+import banner11 from "/images/1.1.png";
+import banner12 from "/images/1.2.png";
 
-import banner21 from "../../assets/images/2.1.png";
-import banner22 from "../../assets/images/2.2.png";
-import banner23 from "../../assets/images/2.3.png";
-import banner24 from "../../assets/images/2.4.png";
+import banner21 from "/images/2.1.png";
+import banner22 from "/images/2.2.png";
+import banner23 from "/images/2.3.png";
+import banner24 from "/images/2.4.png";
 
 const topBanners = [banner11, banner12];
 const bottomBanners = [banner21, banner22, banner23, banner24];
