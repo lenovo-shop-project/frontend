@@ -1,0 +1,211 @@
+.app-toast-list {
+  position: fixed;
+  top: 22px;
+  right: 24px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: calc(100vw - 48px);
+  pointer-events: none;
+}
+
+.app-toast {
+  position: relative;
+  width: 330px;
+  min-height: 72px;
+  padding: 16px 44px 16px 18px;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.18);
+  border-left: 6px solid #e2231a;
+  animation: appToastIn 0.25s ease;
+  pointer-events: auto;
+}
+
+.app-toast-success {
+  border-left-color: #20a35b;
+}
+
+.app-toast-error {
+  border-left-color: #e2231a;
+}
+
+.app-toast-warning {
+  border-left-color: #f3a400;
+}
+
+.app-toast-info {
+  border-left-color: #333333;
+}
+
+.app-toast-title {
+  font-weight: 800;
+  font-size: 14px;
+  color: #111111;
+  margin-bottom: 6px;
+}
+
+.app-toast-message {
+  font-size: 14px;
+  line-height: 1.35;
+  color: #333333;
+}
+
+.app-toast-close {
+  position: absolute;
+  top: 9px;
+  right: 10px;
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: #f2f2f2;
+  color: #111111;
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.app-toast-close:hover {
+  background: #e2231a;
+  color: #ffffff;
+}
+
+.app-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.42);
+}
+
+.app-confirm-window {
+  position: relative;
+  width: min(430px, 100%);
+  padding: 28px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.28);
+  animation: appConfirmIn 0.2s ease;
+}
+
+.app-confirm-window h3 {
+  margin: 0 36px 12px 0;
+  font-size: 22px;
+  color: #111111;
+}
+
+.app-confirm-window p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #333333;
+}
+
+.app-confirm-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: #f1f1f1;
+  color: #111111;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.app-confirm-close:hover {
+  background: #e2231a;
+  color: #ffffff;
+}
+
+.app-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.app-confirm-actions button {
+  min-width: 118px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.app-confirm-cancel {
+  border: 1px solid #dddddd;
+  background: #ffffff;
+  color: #111111;
+}
+
+.app-confirm-cancel:hover {
+  background: #f4f4f4;
+}
+
+.app-confirm-ok {
+  border: 1px solid #e2231a;
+  background: #e2231a;
+  color: #ffffff;
+}
+
+.app-confirm-ok:hover {
+  background: #c91f18;
+}
+
+@keyframes appToastIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes appConfirmIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 600px) {
+  .app-toast-list {
+    top: 12px;
+    right: 12px;
+    left: 12px;
+    max-width: none;
+  }
+
+  .app-toast {
+    width: auto;
+  }
+
+  .app-confirm-window {
+    padding: 24px 18px;
+  }
+
+  .app-confirm-actions {
+    flex-direction: column-reverse;
+  }
+
+  .app-confirm-actions button {
+    width: 100%;
+  }
+}

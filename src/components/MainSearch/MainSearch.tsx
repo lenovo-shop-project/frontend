@@ -1,5 +1,6 @@
 import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
+import { showNotification } from "../../utils/notifications";
 import "./MainSearch.css";
 
 interface MainSearchProps {
@@ -13,7 +14,7 @@ const MainSearch = ({ onSearch }: MainSearchProps) => {
     const value = search.trim();
 
     if (!value) {
-      alert("Введіть слово для пошуку");
+      showNotification("Введіть слово для пошуку", "warning");
       return;
     }
 

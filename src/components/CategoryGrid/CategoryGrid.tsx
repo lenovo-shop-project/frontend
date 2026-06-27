@@ -11,7 +11,7 @@ interface CategoryGridProps {
 const categories = [
   {
     title: "Ноутбуки",
-    image: "/images/categories/laptops.png",
+    image: "/images/laptops.png",
     items: [
       { label: "Всі Ноутбуки ›", title: "Ноутбуки", keyword: "", categoryId: 1 },
       { label: "ThinkPad", title: "ThinkPad", keyword: "thinkpad", categoryId: 1 },
@@ -24,7 +24,7 @@ const categories = [
   },
   {
     title: "Планшети",
-    image: "/images/categories/tablets.png",
+    image: "/images/tablets.png",
     items: [
       { label: "Всі Планшети ›", title: "Планшети", keyword: "", categoryId: 2 },
       { label: "Ігрові", title: "Ігрові планшети", keyword: "ігровий", categoryId: 2 },
@@ -35,7 +35,7 @@ const categories = [
   },
   {
     title: "Смартфони MOTOROLA",
-    image: "/images/categories/motorola.png",
+    image: "/images/motorola.png",
     items: [
       { label: "Всі Смартфони ›", title: "Смартфони Motorola", keyword: "", categoryId: 3 },
       { label: "Moto Razr", title: "Moto Razr", keyword: "razr", categoryId: 3 },
@@ -47,7 +47,7 @@ const categories = [
   },
   {
     title: "Комп’ютери",
-    image: "/images/categories/computers.png",
+    image: "/images/computers.png",
     items: [
       { label: "Всі Комп’ютери ›", title: "Комп’ютери", keyword: "", categoryId: 10 },
       { label: "ThinkCentre", title: "ThinkCentre", keyword: "thinkcentre", categoryId: 10 },
@@ -59,7 +59,7 @@ const categories = [
   },
   {
     title: "Моноблоки",
-    image: "/images/categories/monoblocks.png",
+    image: "/images/monoblocks.png",
     items: [
       { label: "Всі Моноблоки ›", title: "Моноблоки", keyword: "", categoryId: 9 },
       { label: "ThinkCentre", title: "Моноблоки ThinkCentre", keyword: "thinkcentre", categoryId: 9 },
@@ -70,7 +70,7 @@ const categories = [
   },
   {
     title: "Монітори",
-    image: "/images/categories/monitors.png",
+    image: "/images/monitors.png",
     items: [
       { label: "Всі Монітори ›", title: "Монітори", keyword: "", categoryId: 5 },
       { label: "Think", title: "Монітори Think", keyword: "think", categoryId: 5 },
@@ -80,7 +80,7 @@ const categories = [
   },
   {
     title: "Ігрові консолі",
-    image: "/images/categories/consoles.png",
+    image: "/images/consoles.png",
     items: [
       { label: "Всі Ігрові консолі ›", title: "Ігрові консолі", keyword: "", categoryId: 4 },
       { label: "Legion Go", title: "Legion Go", keyword: "legion go", categoryId: 4 },
@@ -89,7 +89,7 @@ const categories = [
   },
   {
     title: "Інтерактивні Панелі",
-    image: "/images/categories/panels.png",
+    image: "/images/panels.png",
     items: [
       { label: "Всі Панелі ›", title: "Інтерактивні Панелі", keyword: "", categoryId: 8 },
       { label: "ThinkVision T86", title: "ThinkVision T86", keyword: "t86", categoryId: 8 },
@@ -99,7 +99,7 @@ const categories = [
   },
   {
     title: "Сервери",
-    image: "/images/categories/servers.png",
+    image: "/images/servers.png",
     items: [
       { label: "Всі Сервери ›", title: "Сервери", keyword: "", categoryId: 7 },
       { label: "ThinkSystem ST50", title: "ThinkSystem ST50", keyword: "st50", categoryId: 7 },
@@ -109,7 +109,7 @@ const categories = [
   },
   {
     title: "Аксесуари",
-    image: "/images/categories/accessories.png",
+    image: "/images/accessories.png",
     items: [
       { label: "Всі Аксесуари ›", title: "Аксесуари", keyword: "", categoryId: 6 },
       { label: "Додаткові сервіси ›", title: "Додаткові сервіси", keyword: "сервіс", categoryId: 6 },
