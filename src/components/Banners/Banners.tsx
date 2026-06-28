@@ -1,111 +1,169 @@
 import { useEffect, useState } from "react";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import {
+  fetchBackendCatalogBanner,
+  getActiveSiteBanners,
+  SITE_CONTENT_CHANGED_EVENT,
+  type SiteBanner,
+} from "../../utils/siteContent";
 import "./Banners.css";
 
-import banner11 from "/images/1.1.png";
-import banner12 from "/images/1.2.png";
-
-import banner21 from "/images/2.1.png";
-import banner22 from "/images/2.2.png";
-import banner23 from "/images/2.3.png";
-import banner24 from "/images/2.4.png";
-
-const topBanners = [banner11, banner12];
-const bottomBanners = [banner21, banner22, banner23, banner24];
-
 const Banners = () => {
-    const [topIndex, setTopIndex] = useState(0);
-    const [bottomIndex, setBottomIndex] = useState(0);
+  const [topBanners, setTopBanners] = useState<SiteBanner[]>(() =>
+    getActiveSiteBanners("top")
+  );
+  const [bottomBanners, setBottomBanners] = useState<SiteBanner[]>(() =>
+    getActiveSiteBanners("bottom")
+  );
 
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setTopIndex((prev) => (prev + 1) % topBanners.length);
-            setBottomIndex((prev) => (prev + 1) % bottomBanners.length);
-        }, 5000);
+  const [topIndex, setTopIndex] = useState(0);
+  const [bottomIndex, setBottomIndex] = useState(0);
 
-        return () => clearInterval(timer);
-    }, []);
+  const reloadBanners = async () => {
+    const localTopBanners = getActiveSiteBanners("top");
+    const backendBanner = await fetchBackendCatalogBanner();
 
-    const prevTop = () => {
-        setTopIndex((prev) => (prev - 1 + topBanners.length) % topBanners.length);
+    setTopBanners(backendBanner ? [backendBanner, ...localTopBanners] : localTopBanners);
+    setBottomBanners(getActiveSiteBanners("bottom"));
+  };
+
+  useEffect(() => {
+    reloadBanners();
+
+    window.addEventListener(SITE_CONTENT_CHANGED_EVENT, reloadBanners);
+    window.addEventListener("storage", reloadBanners);
+
+    return () => {
+      window.removeEventListener(SITE_CONTENT_CHANGED_EVENT, reloadBanners);
+      window.removeEventListener("storage", reloadBanners);
     };
+  }, []);
 
-    const nextTop = () => {
-        setTopIndex((prev) => (prev + 1) % topBanners.length);
-    };
+  useEffect(() => {
+    if (topIndex >= topBanners.length) setTopIndex(0);
+  }, [topBanners.length, topIndex]);
 
-    const prevBottom = () => {
-        setBottomIndex((prev) => (prev - 1 + bottomBanners.length) % bottomBanners.length);
-    };
+  useEffect(() => {
+    if (bottomIndex >= bottomBanners.length) setBottomIndex(0);
+  }, [bottomBanners.length, bottomIndex]);
 
-    const nextBottom = () => {
-        setBottomIndex((prev) => (prev + 1) % bottomBanners.length);
-    };
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTopIndex((prev) =>
+        topBanners.length > 0 ? (prev + 1) % topBanners.length : 0
+      );
+      setBottomIndex((prev) =>
+        bottomBanners.length > 0 ? (prev + 1) % bottomBanners.length : 0
+      );
+    }, 5000);
 
-    return (
-        <section className="banners-section">
-            <h2>Акції</h2>
+    return () => clearInterval(timer);
+  }, [topBanners.length, bottomBanners.length]);
 
-            <div className="banner-slider">
-                <div
-                    className="slider-track"
-                    style={{ transform: `translateX(-${topIndex * 100}%)` }}
-                >
-                    {topBanners.map((banner, index) => (
-                        <img key={index} src={banner} alt="Акційний банер" />
-                    ))}
-                </div>
-
-                <button className="banner-arrow left" onClick={prevTop}>
-                    <KeyboardArrowLeftIcon />
-                </button>
-
-                <button className="banner-arrow right" onClick={nextTop}>
-                    <KeyboardArrowRightIcon />
-                </button>
-            </div>
-
-            <div className="banner-dots">
-                {topBanners.map((_, index) => (
-                    <button
-                        key={index}
-                        className={topIndex === index ? "active" : ""}
-                        onClick={() => setTopIndex(index)}
-                    />
-                ))}
-            </div>
-
-            <div className="banner-slider bottom-banner">
-                <div
-                    className="slider-track"
-                    style={{ transform: `translateX(-${bottomIndex * 100}%)` }}
-                >
-                    {bottomBanners.map((banner, index) => (
-                        <img key={index} src={banner} alt="Trade-in банер" />
-                    ))}
-                </div>
-
-                <button className="banner-arrow left" onClick={prevBottom}>
-                    <KeyboardArrowLeftIcon />
-                </button>
-
-                <button className="banner-arrow right" onClick={nextBottom}>
-                    <KeyboardArrowRightIcon />
-                </button>
-            </div>
-
-            <div className="banner-dots">
-                {bottomBanners.map((_, index) => (
-                    <button
-                        key={index}
-                        className={bottomIndex === index ? "active" : ""}
-                        onClick={() => setBottomIndex(index)}
-                    />
-                ))}
-            </div>
-        </section>
+  const prevTop = () => {
+    setTopIndex((prev) =>
+      topBanners.length > 0
+        ? (prev - 1 + topBanners.length) % topBanners.length
+        : 0
     );
+  };
+
+  const nextTop = () => {
+    setTopIndex((prev) =>
+      topBanners.length > 0 ? (prev + 1) % topBanners.length : 0
+    );
+  };
+
+  const prevBottom = () => {
+    setBottomIndex((prev) =>
+      bottomBanners.length > 0
+        ? (prev - 1 + bottomBanners.length) % bottomBanners.length
+        : 0
+    );
+  };
+
+  const nextBottom = () => {
+    setBottomIndex((prev) =>
+      bottomBanners.length > 0 ? (prev + 1) % bottomBanners.length : 0
+    );
+  };
+
+  return (
+    <section className="banners-section">
+      <h2>Акції</h2>
+
+      <div className="banner-slider">
+        <div
+          className="slider-track"
+          style={{ transform: `translateX(-${topIndex * 100}%)` }}
+        >
+          {topBanners.map((banner) => (
+            <img key={banner.id} src={banner.image} alt={banner.title} />
+          ))}
+        </div>
+
+        {topBanners.length > 1 && (
+          <>
+            <button className="banner-arrow left" onClick={prevTop}>
+              <KeyboardArrowLeftIcon />
+            </button>
+
+            <button className="banner-arrow right" onClick={nextTop}>
+              <KeyboardArrowRightIcon />
+            </button>
+          </>
+        )}
+      </div>
+
+      {topBanners.length > 1 && (
+        <div className="banner-dots">
+          {topBanners.map((banner, index) => (
+            <button
+              key={banner.id}
+              className={topIndex === index ? "active" : ""}
+              onClick={() => setTopIndex(index)}
+            />
+          ))}
+        </div>
+      )}
+
+      <div className="banner-slider bottom-banner">
+        <div
+          className="slider-track"
+          style={{ transform: `translateX(-${bottomIndex * 100}%)` }}
+        >
+          {bottomBanners.map((banner) => (
+            <img key={banner.id} src={banner.image} alt={banner.title} />
+          ))}
+        </div>
+
+        {bottomBanners.length > 1 && (
+          <>
+            <button className="banner-arrow left" onClick={prevBottom}>
+              <KeyboardArrowLeftIcon />
+            </button>
+
+            <button className="banner-arrow right" onClick={nextBottom}>
+              <KeyboardArrowRightIcon />
+            </button>
+          </>
+        )}
+      </div>
+
+      {bottomBanners.length > 1 && (
+        <div className="banner-dots">
+          {bottomBanners.map((banner, index) => (
+            <button
+              key={banner.id}
+              className={bottomIndex === index ? "active" : ""}
+              onClick={() => setBottomIndex(index)}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+  );
 };
 
 export default Banners;

@@ -3,14 +3,19 @@ import SearchIcon from "@mui/icons-material/Search";
 import PersonIcon from "@mui/icons-material/Person";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import LogoutIcon from "@mui/icons-material/Logout";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import BalanceIcon from "@mui/icons-material/Balance";
 import Cart from "../Cart/Cart";
 import AdminPanel from "../AdminPanel/AdminPanel";
-import LanguageSelector from "../LanguageSelector/LanguageSelector";
+
 import AuthModal from "../AuthModal/AuthModal";
 import SearchOverlay from "../SearchOverlay/SearchOverlay";
 import { BASE_URL } from "../../config";
+import { showNotification } from "../../utils/notifications";
 
 import MyOrders from "../MyOrders/MyOrders";
+import FavoritesPanel from "../FavoritesPanel/FavoritesPanel";
+import ComparePanel from "../ComparePanel/ComparePanel";
 import "./Header.css";
 
 const accessories = [
@@ -86,6 +91,46 @@ const accessoriesSearchMap: Record<
     keyword: "чохол",
     categoryId: 6,
   },
+
+  "Зарядні пристрої для планшетів": {
+    keyword: "заряд",
+    categoryId: 6,
+  },
+
+  "Стилуси": {
+    keyword: "стилус",
+    categoryId: 6,
+  },
+
+  "Настільні кріплення": {
+    keyword: "кріплення",
+    categoryId: 6,
+  },
+
+  "Акустика": {
+    keyword: "акустика|колонки",
+    categoryId: 6,
+  },
+
+  "Веб-камери": {
+    keyword: "камера|web",
+    categoryId: 6,
+  },
+
+  "Віртуальна реальність": {
+    keyword: "vr|віртуаль",
+    categoryId: 6,
+  },
+
+  "Операційні системи": {
+    keyword: "windows|операцій",
+    categoryId: 6,
+  },
+
+  "Офісні програми": {
+    keyword: "office|офіс",
+    categoryId: 6,
+  },
 };
 
 const otherProducts = [
@@ -96,13 +141,40 @@ const otherProducts = [
   "Ігрові консолі",
   "Сервери",
 ];
-const otherProductsSearchMap: Record<string, string> = {
-  "Інтерактивні Панелі": "інтерактивна панель",
-  "Моноблоки": "моноблок",
-  "Настільні ПК": "пк",
-  "Монітори": "монітор",
-  "Ігрові консолі": "консоль",
-  "Сервери": "сервер",
+const otherProductsSearchMap: Record<
+  string,
+  { title: string; keyword: string; categoryId: number }
+> = {
+  "Інтерактивні Панелі": {
+    title: "Інтерактивні панелі",
+    keyword: "",
+    categoryId: 8,
+  },
+  "Моноблоки": {
+    title: "Моноблоки",
+    keyword: "",
+    categoryId: 9,
+  },
+  "Настільні ПК": {
+    title: "Комп’ютери",
+    keyword: "",
+    categoryId: 10,
+  },
+  "Монітори": {
+    title: "Монітори",
+    keyword: "",
+    categoryId: 5,
+  },
+  "Ігрові консолі": {
+    title: "Ігрові консолі",
+    keyword: "",
+    categoryId: 4,
+  },
+  "Сервери": {
+    title: "Сервери",
+    keyword: "",
+    categoryId: 7,
+  },
 };
 
 const buyerMenu = [
@@ -116,9 +188,6 @@ const buyerMenu = [
   "Сервісні центри",
 ];
 interface HeaderProps {
-  openLaptopsPage?: () => void;
-  openTabletsPage?: () => void;
-  openMotorolaPage?: () => void;
   openPromotionsPage?: () => void;
 
   openSearchCategory?: (
@@ -128,15 +197,14 @@ interface HeaderProps {
   ) => void;
 }
 const Header = ({
-  openLaptopsPage,
-  openTabletsPage,
-  openMotorolaPage,
   openPromotionsPage,
   openSearchCategory,
   
 }: HeaderProps) => {
  const [isCartOpen, setIsCartOpen] = useState(false);
 const [isOrdersOpen, setIsOrdersOpen] = useState(false);
+const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
+const [isCompareOpen, setIsCompareOpen] = useState(false);
 const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -147,6 +215,7 @@ const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const [avatar, setAvatar] = useState(localStorage.getItem("avatar") || "");
+  const [userEmail, setUserEmail] = useState("");
 
   const checkUser = async () => {
     const token = localStorage.getItem("token");
@@ -172,6 +241,9 @@ const [isAdminOpen, setIsAdminOpen] = useState(false);
 
       console.log("USER FROM /me:", user);
 
+      const emailFromUser = String(user.email || "").trim().toLowerCase();
+      setUserEmail(emailFromUser);
+
 const role = String(user.role).toLowerCase();
 
 if (role === "admin") {
@@ -180,9 +252,14 @@ if (role === "admin") {
   setIsAdmin(false);
 }
 
-      if (user.image_url) {
-        localStorage.setItem("avatar", user.image_url);
-        setAvatar(user.image_url);
+      const savedAvatar = emailFromUser
+        ? localStorage.getItem(`avatar:${emailFromUser}`)
+        : "";
+      const nextAvatar = savedAvatar || user.image_url || "";
+
+      if (nextAvatar) {
+        localStorage.setItem("avatar", nextAvatar);
+        setAvatar(nextAvatar);
       }
     } catch (error) {
       console.error(error);
@@ -217,8 +294,13 @@ if (role === "admin") {
     setIsAuth(false);
     setIsAdmin(false);
     setAvatar("");
+    setUserEmail("");
     setShowProfileMenu(false);
     setIsAdminOpen(false);
+    setIsCartOpen(false);
+    setIsOrdersOpen(false);
+    setIsFavoritesOpen(false);
+    setIsCompareOpen(false);
   };
 
   const loginSuccess = () => {
@@ -226,19 +308,81 @@ if (role === "admin") {
     checkUser();
   };
 
+  const openHeaderSearch = (
+    title: string,
+    keyword: string,
+    categoryId: number
+  ) => {
+    openSearchCategory?.(title, keyword, categoryId);
+  };
+
+  const uploadAvatar = async (file?: File | null) => {
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      showNotification("Оберіть саме зображення", "warning");
+      return;
+    }
+
+    const token = localStorage.getItem("access_token") || localStorage.getItem("token");
+
+    if (!token) {
+      showNotification("Спочатку увійдіть в акаунт", "warning");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch(`${BASE_URL}/auth/me/avatar`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        showNotification(data?.detail || "Не вдалося змінити аватар", "error");
+        return;
+      }
+
+      const nextAvatar = data.image_url || "";
+
+      if (nextAvatar) {
+        localStorage.setItem("avatar", nextAvatar);
+
+        if (userEmail) {
+          localStorage.setItem(`avatar:${userEmail}`, nextAvatar);
+        }
+
+        setAvatar(nextAvatar);
+        window.dispatchEvent(new Event("avatarChanged"));
+      }
+
+      showNotification("Аватар оновлено", "success");
+    } catch (error) {
+      console.error("AVATAR UPDATE ERROR:", error);
+      showNotification("Не вдалося змінити аватар", "error");
+    }
+  };
+
   return (
     <>
       <header className="header">
         <nav className="header-menu">
-         <button onClick={openLaptopsPage}>
+	         <button onClick={() => openHeaderSearch("Ноутбуки", "", 1)}>
   Ноутбуки
 </button>
 
-          <button onClick={openTabletsPage}>
+	          <button onClick={() => openHeaderSearch("Планшети", "", 2)}>
   Планшети
 </button>
 
-          <button onClick={openMotorolaPage}>
+	          <button onClick={() => openHeaderSearch("Смартфони Motorola", "", 3)}>
   Смартфони Motorola
 </button>
 
@@ -277,9 +421,12 @@ if (role === "admin") {
   <button
     key={item}
     onClick={() => {
+      const search = otherProductsSearchMap[item];
+
       openSearchCategory?.(
-        item,
-        otherProductsSearchMap[item] || item
+        search?.title || item,
+        search?.keyword || "",
+        search?.categoryId
       );
     }}
   >
@@ -403,20 +550,7 @@ if (role === "admin") {
                           type="file"
                           accept="image/*"
                           hidden
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (!file) return;
-
-                            const reader = new FileReader();
-
-                            reader.onload = () => {
-                              const result = reader.result as string;
-                              localStorage.setItem("avatar", result);
-                              setAvatar(result);
-                            };
-
-                            reader.readAsDataURL(file);
-                          }}
+                          onChange={(e) => uploadAvatar(e.target.files?.[0])}
                         />
                       </label>
 
@@ -447,6 +581,28 @@ if (role === "admin") {
     >
       🛒 Кошик
     </button>
+
+    <button
+      className="profile-menu-item"
+      onClick={() => {
+        setIsFavoritesOpen(true);
+        setShowProfileMenu(false);
+      }}
+    >
+      <FavoriteBorderIcon />
+      Обране
+    </button>
+
+    <button
+      className="profile-menu-item"
+      onClick={() => {
+        setIsCompareOpen(true);
+        setShowProfileMenu(false);
+      }}
+    >
+      <BalanceIcon />
+      Порівняння
+    </button>
     
   </>
 )}
@@ -473,13 +629,21 @@ if (role === "admin") {
             )}
           </div>
 
-          <LanguageSelector />
+         
         </div>
 
        {isCartOpen && <Cart close={() => setIsCartOpen(false)} />}
 
 {isOrdersOpen && (
   <MyOrders close={() => setIsOrdersOpen(false)} />
+)}
+
+{isFavoritesOpen && (
+  <FavoritesPanel close={() => setIsFavoritesOpen(false)} />
+)}
+
+{isCompareOpen && (
+  <ComparePanel close={() => setIsCompareOpen(false)} />
 )}
       </header>
 

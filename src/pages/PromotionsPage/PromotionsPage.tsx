@@ -1,4 +1,9 @@
 import { useEffect, useState } from "react";
+import {
+  getVisibleSitePromotions,
+  SITE_CONTENT_CHANGED_EVENT,
+  type SitePromotion,
+} from "../../utils/siteContent";
 import "./PromotionsPage.css";
 
 interface Props {
@@ -8,7 +13,10 @@ interface Props {
 const PromotionsPage = ({ goHome }: Props) => {
   const [activeTab, setActiveTab] = useState<"active" | "archive">("active");
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
-const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [promotions, setPromotions] = useState<SitePromotion[]>(() =>
+    getVisibleSitePromotions()
+  );
 
   const [timeLeft, setTimeLeft] = useState({
     days: 6,
@@ -16,6 +24,20 @@ const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     minutes: 45,
     seconds: 35,
   });
+
+  const reloadPromotions = () => {
+    setPromotions(getVisibleSitePromotions());
+  };
+
+  useEffect(() => {
+    window.addEventListener(SITE_CONTENT_CHANGED_EVENT, reloadPromotions);
+    window.addEventListener("storage", reloadPromotions);
+
+    return () => {
+      window.removeEventListener(SITE_CONTENT_CHANGED_EVENT, reloadPromotions);
+      window.removeEventListener("storage", reloadPromotions);
+    };
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -48,52 +70,40 @@ const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     return () => clearInterval(timer);
   }, []);
 
-  const promotions = [
-    {
-      id: 1,
-      image: "/promotions/promo-tablet.jpg",
-      title: "Купуй планшет за спеціальною пропозицією!",
-      category: "Планшети",
-      type: "Знижка",
-    },
-    {
-      id: 2,
-      image: "/promotions/promo-keyboard.jpg",
-      title: "Купуй Аксесуари за спеціальною пропозицією!",
-      category: "Клавіатури",
-      type: "Подарунок",
-    },
-  ];
-
   const toggleType = (type: string) => {
-  setSelectedTypes((prev) =>
-    prev.includes(type)
-      ? prev.filter((item) => item !== type)
-      : [...prev, type]
+    setSelectedTypes((prev) =>
+      prev.includes(type)
+        ? prev.filter((item) => item !== type)
+        : [...prev, type]
+    );
+  };
+
+  const toggleCategory = (category: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(category)
+        ? prev.filter((item) => item !== category)
+        : [...prev, category]
+    );
+  };
+
+  const types = Array.from(new Set(promotions.map((promo) => promo.type)));
+  const categories = Array.from(
+    new Set(promotions.map((promo) => promo.category))
   );
-};
 
-const toggleCategory = (category: string) => {
-  setSelectedCategories((prev) =>
-    prev.includes(category)
-      ? prev.filter((item) => item !== category)
-      : [...prev, category]
-  );
-};
+  const filteredPromotions = promotions.filter((promo) => {
+    if (activeTab === "active" && promo.is_archive) return false;
+    if (activeTab === "archive" && !promo.is_archive) return false;
 
-const filteredPromotions =
-  activeTab === "active"
-    ? promotions.filter((promo) => {
-        const typeMatch =
-          selectedTypes.length === 0 || selectedTypes.includes(promo.type);
+    const typeMatch =
+      selectedTypes.length === 0 || selectedTypes.includes(promo.type);
 
-        const categoryMatch =
-          selectedCategories.length === 0 ||
-          selectedCategories.includes(promo.category);
+    const categoryMatch =
+      selectedCategories.length === 0 ||
+      selectedCategories.includes(promo.category);
 
-        return typeMatch && categoryMatch;
-      })
-    : [];
+    return typeMatch && categoryMatch;
+  });
 
   return (
     <main className="promotions-page">
@@ -128,66 +138,31 @@ const filteredPromotions =
           <div className="promo-filter-block">
             <h3>Тип</h3>
 
-            <label>
-              <input
-  type="checkbox"
-  checked={selectedTypes.includes("Знижка")}
-  onChange={() => toggleType("Знижка")}
-/>Знижка
-            </label>
-
-            <label>
-              <input
-  type="checkbox"
-  checked={selectedTypes.includes("Подарунок")}
-  onChange={() => toggleType("Подарунок")}
-/>Подарунок
-            </label>
+            {types.map((type) => (
+              <label key={type}>
+                <input
+                  type="checkbox"
+                  checked={selectedTypes.includes(type)}
+                  onChange={() => toggleType(type)}
+                />
+                {type}
+              </label>
+            ))}
           </div>
 
           <div className="promo-filter-block">
             <h3>Категорії</h3>
 
-            <label>
-              <input
-  type="checkbox"
-  checked={selectedCategories.includes("Планшети")}
-  onChange={() => toggleCategory("Планшети")}
-/> Планшети
-            </label>
-
-            <label>
-              <input type="checkbox" />
-              Комп'ютерні миші
-            </label>
-
-            <label>
-              <input type="checkbox" />
-              Сумки, рюкзаки і чохли для ноутбуків
-            </label>
-
-            <label>
-              <input
-  type="checkbox"
-  checked={selectedCategories.includes("Клавіатури")}
-  onChange={() => toggleCategory("Клавіатури")}
-/>Клавіатури
-            </label>
-
-            <label>
-              <input type="checkbox" />
-              Чохли для планшетів
-            </label>
-
-            <label>
-              <input type="checkbox" />
-              Навушники
-            </label>
-
-            <label>
-              <input type="checkbox" />
-              Стилуси
-            </label>
+            {categories.map((category) => (
+              <label key={category}>
+                <input
+                  type="checkbox"
+                  checked={selectedCategories.includes(category)}
+                  onChange={() => toggleCategory(category)}
+                />
+                {category}
+              </label>
+            ))}
           </div>
         </aside>
 
@@ -226,16 +201,12 @@ const filteredPromotions =
                 </div>
               </div>
 
-              <div className="promo-title">
-                {promo.title}
-              </div>
+              <div className="promo-title">{promo.title}</div>
             </article>
           ))}
 
           {filteredPromotions.length === 0 && (
-            <div className="empty-promotions">
-              Архівних акцій поки немає
-            </div>
+            <div className="empty-promotions">Акцій поки немає</div>
           )}
         </section>
       </div>

@@ -36,6 +36,14 @@ function App() {
   const [categoryKeyword, setCategoryKeyword] = useState("");
   const [categoryId, setCategoryId] = useState<number | undefined>(undefined);
 
+  const scrollToProducts = () => {
+    setTimeout(() => {
+      document
+        .getElementById("product-grid-anchor")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
   const openSearchCategory = (
     title: string,
     keyword: string,
@@ -45,6 +53,7 @@ function App() {
     setCategoryKeyword(keyword);
     setCategoryId(id);
     setPage("searchCategory");
+    scrollToProducts();
   };
 
   const openSiteSearch = (value: string) => {
@@ -52,12 +61,10 @@ function App() {
     setCategoryKeyword(value);
     setCategoryId(undefined);
     setPage("searchCategory");
+    scrollToProducts();
   };
 
   const headerProps = {
-    openLaptopsPage: () => setPage("laptops"),
-    openTabletsPage: () => setPage("tablets"),
-    openMotorolaPage: () => setPage("motorola"),
     openPromotionsPage: () => setPage("promotions"),
     openSearchCategory,
   };
@@ -160,10 +167,6 @@ function App() {
 
         <main className="page-content">
           <div className="container">
-            <button className="back-home-btn" onClick={() => setPage("home")}>
-              ← На головну
-            </button>
-
             <MainSearch onSearch={openSiteSearch} />
 
             <Banners />
@@ -172,6 +175,7 @@ function App() {
               title="Ноутбуки"
               categoryId={1}
               showPagination={true}
+              onClose={() => setPage("home")}
             />
           </div>
 
@@ -192,10 +196,6 @@ function App() {
 
         <main className="page-content">
           <div className="container">
-            <button className="back-home-btn" onClick={() => setPage("home")}>
-              ← На головну
-            </button>
-
             <MainSearch onSearch={openSiteSearch} />
 
             <Banners />
@@ -205,6 +205,7 @@ function App() {
               categoryId={3}
               showPagination={true}
               filterType="motorola"
+              onClose={() => setPage("home")}
             />
           </div>
 
@@ -225,10 +226,6 @@ function App() {
 
         <main className="page-content">
           <div className="container">
-            <button className="back-home-btn" onClick={() => setPage("home")}>
-              ← На головну
-            </button>
-
             <MainSearch onSearch={openSiteSearch} />
 
             <Banners />
@@ -239,6 +236,7 @@ function App() {
               categoryId={categoryId}
               showPagination={true}
               filterType="simple"
+              onClose={() => setPage("home")}
             />
           </div>
 
@@ -259,10 +257,6 @@ function App() {
 
         <main className="page-content">
           <div className="container">
-            <button className="back-home-btn" onClick={() => setPage("home")}>
-              ← На головну
-            </button>
-
             <MainSearch onSearch={openSiteSearch} />
 
             <Banners />
@@ -272,6 +266,7 @@ function App() {
               categoryId={2}
               showPagination={true}
               filterType="tablet"
+              onClose={() => setPage("home")}
             />
           </div>
 

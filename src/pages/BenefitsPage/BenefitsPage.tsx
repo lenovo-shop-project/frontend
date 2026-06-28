@@ -84,7 +84,6 @@ const BenefitsPage = ({ goHome }: Props) => {
             <div>
               <h3>{item.title}</h3>
               <p>{item.text}</p>
-              <a>Дізнатись деталі</a>
             </div>
           </div>
         ))}

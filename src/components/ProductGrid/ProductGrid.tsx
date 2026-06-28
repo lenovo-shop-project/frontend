@@ -3,7 +3,7 @@ import ProductCard from "../ProductCard/ProductCard";
 import type { Product } from "../ProductCard/ProductCard";
 import "./ProductGrid.css";
 import { BASE_URL } from "../../config";
-
+import ProductDetails from "../ProductDetails/ProductDetails";
 type FilterType = "default" | "tablet" | "motorola" | "simple";
 
 interface ProductGridProps {
@@ -12,6 +12,7 @@ interface ProductGridProps {
   categoryId?: number;
   showPagination?: boolean;
   filterType?: FilterType;
+  onClose?: () => void;
 }
 
 const getLineOptions = (filterType: FilterType) => {
@@ -36,12 +37,12 @@ const ProductGrid = ({
   categoryId,
   showPagination = false,
   filterType = "default",
+  onClose,
 }: ProductGridProps) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
   const [visibleCount, setVisibleCount] = useState(10);
-
-  const [onlyAvailable, setOnlyAvailable] = useState(false);
+const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [sort, setSort] = useState("default");
   const [brandFilter, setBrandFilter] = useState("");
 
@@ -73,6 +74,15 @@ const ProductGrid = ({
       });
   }, []);
 
+  useEffect(() => {
+    setPage(1);
+    setVisibleCount(10);
+    setSort("default");
+    setBrandFilter("");
+    setMinPrice("");
+    setMaxPrice("");
+  }, [title, categoryKeyword, categoryId, filterType, showPagination]);
+
   let filteredProducts = products.filter((product: any) => {
     const name = String(product.name || product.title || "").toLowerCase();
     const description = String(product.description || "").toLowerCase();
@@ -87,16 +97,19 @@ const ProductGrid = ({
     }
 
     if (categoryKeyword) {
-      const keyword = categoryKeyword.toLowerCase();
+      const keywords = categoryKeyword
+        .toLowerCase()
+        .split("|")
+        .map((item) => item.trim())
+        .filter(Boolean);
 
-      if (!name.includes(keyword) && !description.includes(keyword)) {
+      const textForSearch = `${name} ${description}`;
+
+      if (!keywords.some((keyword) => textForSearch.includes(keyword))) {
         return false;
       }
     }
 
-    if (onlyAvailable && !product.is_available) {
-      return false;
-    }
 
     if (brandFilter && brandFilter !== "Всі") {
       if (!name.includes(brandFilter.toLowerCase())) {
@@ -133,7 +146,10 @@ const ProductGrid = ({
   const lineOptions = getLineOptions(filterType);
 
   return (
-    <section className="product-section">
+    <section
+      className="product-section"
+      id={showPagination ? "product-grid-anchor" : undefined}
+    >
       <h2>{title}</h2>
 
       {showPagination ? (
@@ -223,24 +239,38 @@ const ProductGrid = ({
                   <option value="expensive">Спочатку дорожчі</option>
                 </select>
 
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={onlyAvailable}
-                    onChange={(e) => {
-                      setOnlyAvailable(e.target.checked);
-                      setPage(1);
-                    }}
-                  />
-                  В наявності
-                </label>
+                {onClose && (
+                  <button
+                    type="button"
+                    className="category-close-btn"
+                    onClick={onClose}
+                    aria-label="Закрити сторінку пошуку"
+                    title="Закрити"
+                  >
+                    ×
+                  </button>
+                )}
               </div>
             </div>
 
             <div className="product-grid">
               {paginatedProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
+  <div
+    key={product.id}
+    className="product-card-click"
+    onClick={(event) => {
+      const target = event.target as HTMLElement;
+
+      if (target.closest("button") || target.closest(".product-icons")) {
+        return;
+      }
+
+      setSelectedProduct(product);
+    }}
+  >
+    <ProductCard product={product} />
+  </div>
+))}
             </div>
 
             <div className="pagination-box">
@@ -285,10 +315,30 @@ const ProductGrid = ({
       ) : (
         <div className="product-grid">
           {paginatedProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+  <div
+    key={product.id}
+    className="product-card-click"
+    onClick={(event) => {
+      const target = event.target as HTMLElement;
+
+      if (target.closest("button") || target.closest(".product-icons")) {
+        return;
+      }
+
+      setSelectedProduct(product);
+    }}
+  >
+    <ProductCard product={product} />
+  </div>
+))}
         </div>
       )}
+      {selectedProduct && (
+  <ProductDetails
+    product={selectedProduct}
+    close={() => setSelectedProduct(null)}
+  />
+)}
     </section>
   );
 };

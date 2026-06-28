@@ -195,3 +195,25 @@
 .product-card:hover .product-hover-description {
   display: block;
 }
+.product-icon-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: #777;
+  cursor: pointer;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-icon-btn svg {
+  font-size: 27px;
+}
+
+.product-icon-btn:hover,
+.product-icon-btn.active {
+  color: #e2231a;
+}

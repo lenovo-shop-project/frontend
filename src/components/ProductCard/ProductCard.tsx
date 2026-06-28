@@ -1,9 +1,21 @@
+import { useEffect, useState } from "react";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import BalanceIcon from "@mui/icons-material/Balance";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import StarIcon from "@mui/icons-material/Star";
 import ChatIcon from "@mui/icons-material/Chat";
-import { BASE_URL } from "../../config";
+import {
+  addProductToCart,
+  COMPARE_STORAGE_KEY,
+  FAVORITES_STORAGE_KEY,
+  isProductInList,
+  loadFavoriteProducts,
+  PRODUCTS_LIST_CHANGED_EVENT,
+  toggleFavoriteProduct,
+  toggleProductInList,
+} from "../../utils/productLists";
+import { showNotification } from "../../utils/notifications";
 import "./ProductCard.css";
 
 export interface Product {
@@ -13,7 +25,8 @@ export interface Product {
   title?: string;
 
   image_url?: string | null;
-  imageUrl?: string;
+  image?: string | null;
+  imageUrl?: string | null;
 
   price: number;
 
@@ -26,6 +39,8 @@ export interface Product {
   description?: string | null;
   is_available?: boolean;
   isAvailable?: boolean;
+  category_id?: number;
+  categoryId?: number;
 }
 
 interface Props {
@@ -33,59 +48,56 @@ interface Props {
 }
 
 const ProductCard = ({ product }: Props) => {
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isCompared, setIsCompared] = useState(false);
+
   const productTitle = product.name || product.title || "Без назви";
-  const productImage = product.image_url || product.imageUrl || "";
+  const productImage = product.image_url || product.image || product.imageUrl || "";
   const productAvailable = product.is_available ?? product.isAvailable ?? false;
 
-  const addToCart = async () => {
-    const token = localStorage.getItem("token");
+  const syncListState = () => {
+    setIsFavorite(isProductInList(FAVORITES_STORAGE_KEY, product.id));
+    setIsCompared(isProductInList(COMPARE_STORAGE_KEY, product.id));
+  };
+
+  useEffect(() => {
+    syncListState();
+    loadFavoriteProducts().then(syncListState);
+
+    window.addEventListener(PRODUCTS_LIST_CHANGED_EVENT, syncListState);
+    window.addEventListener("storage", syncListState);
+
+    return () => {
+      window.removeEventListener(PRODUCTS_LIST_CHANGED_EVENT, syncListState);
+      window.removeEventListener("storage", syncListState);
+    };
+  }, [product.id]);
+
+  const checkIsClientLoggedIn = () => {
+    const token = localStorage.getItem("access_token") || localStorage.getItem("token");
 
     if (!token) {
-      alert("Спочатку увійдіть в акаунт");
-      return;
+      showNotification("Спочатку увійдіть в акаунт", "warning");
+      return false;
     }
 
-    const response = await fetch(`${BASE_URL}/auth/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return true;
+  };
 
-    const user = await response.json();
+  const toggleFavorite = async () => {
+    if (!checkIsClientLoggedIn()) return;
 
-    const role = String(user.role || "").toLowerCase();
+    await toggleFavoriteProduct(product);
+  };
 
-    if (role === "admin" || role === "userrole.admin") {
-      alert("Адмін не може додавати товари в кошик");
-      return;
-    }
+  const toggleCompare = () => {
+    if (!checkIsClientLoggedIn()) return;
 
-    if (!productAvailable) {
-      alert("Цього товару немає в наявності");
-      return;
-    }
-
-    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-
-    const existingProduct = cart.find(
-      (item: any) => item.id === product.id
+    const added = toggleProductInList(COMPARE_STORAGE_KEY, product);
+    showNotification(
+      added ? "Товар додано до порівняння" : "Товар прибрано з порівняння",
+      added ? "success" : "info"
     );
-
-    if (existingProduct) {
-      existingProduct.quantity += 1;
-    } else {
-      cart.push({
-        id: product.id,
-        title: productTitle,
-        price: product.price,
-        image: productImage,
-        quantity: 1,
-      });
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    alert("Товар додано у кошик");
   };
 
   return (
@@ -95,9 +107,26 @@ const ProductCard = ({ product }: Props) => {
         {product.isHit && <span className="hit-label">Хіт</span>}
       </div>
 
-      <div className="product-icons">
-        <FavoriteBorderIcon />
-        <BalanceIcon />
+      <div className="product-icons" onClick={(event) => event.stopPropagation()}>
+        <button
+          type="button"
+          className={isFavorite ? "product-icon-btn active" : "product-icon-btn"}
+          onClick={toggleFavorite}
+          aria-label="Додати в обране"
+          title={isFavorite ? "Прибрати з обраного" : "Додати в обране"}
+        >
+          {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+        </button>
+
+        <button
+          type="button"
+          className={isCompared ? "product-icon-btn active" : "product-icon-btn"}
+          onClick={toggleCompare}
+          aria-label="Додати до порівняння"
+          title={isCompared ? "Прибрати з порівняння" : "Додати до порівняння"}
+        >
+          <BalanceIcon />
+        </button>
       </div>
 
       <div className="product-image-box">
@@ -131,7 +160,13 @@ const ProductCard = ({ product }: Props) => {
           </div>
         </div>
 
-        <button className="cart-button" onClick={addToCart}>
+        <button
+          className="cart-button"
+          onClick={(event) => {
+            event.stopPropagation();
+            addProductToCart(product);
+          }}
+        >
           <ShoppingCartIcon />
         </button>
       </div>

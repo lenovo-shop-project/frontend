@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { BASE_URL } from "../../config";
+import { showConfirm, showNotification } from "../../utils/notifications";
 import "./MyOrders.css";
 
 interface OrderItem {
@@ -71,7 +72,7 @@ const MyOrders = ({ close }: MyOrdersProps) => {
         await response.text()
       );
 
-      alert("Не вдалося завантажити замовлення");
+      showNotification("Не вдалося завантажити замовлення", "error");
       return;
     }
 
@@ -91,8 +92,14 @@ const MyOrders = ({ close }: MyOrdersProps) => {
     loadOrders();
   }, []);
 
-  const payOrder = (orderId: number) => {
-    const ok = confirm("Оплатити це замовлення?");
+  const payOrder = async (orderId: number) => {
+    const ok = await showConfirm(
+      "Оплатити це замовлення?",
+      "Оплата замовлення",
+      "Оплатити",
+      "Скасувати"
+    );
+
     if (!ok) return;
 
     saveLocalOrderStatus(orderId, "paid");
@@ -108,11 +115,17 @@ const MyOrders = ({ close }: MyOrdersProps) => {
       )
     );
 
-    alert("Замовлення оплачено");
+    showNotification("Замовлення оплачено", "success");
   };
 
   const cancelOrder = async (orderId: number) => {
-    const ok = confirm("Скасувати це замовлення?");
+    const ok = await showConfirm(
+      "Скасувати це замовлення?",
+      "Скасування замовлення",
+      "Скасувати замовлення",
+      "Назад"
+    );
+
     if (!ok) return;
 
     const token =
@@ -132,13 +145,13 @@ const MyOrders = ({ close }: MyOrdersProps) => {
     const data = await response.json().catch(() => null);
 
     if (!response.ok) {
-      alert(data?.detail || "Не вдалося скасувати замовлення");
+      showNotification(data?.detail || "Не вдалося скасувати замовлення", "error");
       return;
     }
 
     saveLocalOrderStatus(orderId, "cancelled");
 
-    alert("Замовлення скасовано");
+    showNotification("Замовлення скасовано", "success");
     loadOrders();
   };
 
