@@ -10,7 +10,7 @@ import AdminPanel from "../AdminPanel/AdminPanel";
 
 import AuthModal from "../AuthModal/AuthModal";
 import SearchOverlay from "../SearchOverlay/SearchOverlay";
-import { BASE_URL } from "../../config";
+import { authUrl } from "../../config";
 import { showNotification } from "../../utils/notifications";
 
 import MyOrders from "../MyOrders/MyOrders";
@@ -38,6 +38,7 @@ const accessories = [
   "Операційні системи",
   "Офісні програми",
 ];
+
 const accessoriesSearchMap: Record<
   string,
   { keyword: string; categoryId: number }
@@ -141,6 +142,7 @@ const otherProducts = [
   "Ігрові консолі",
   "Сервери",
 ];
+
 const otherProductsSearchMap: Record<
   string,
   { title: string; keyword: string; categoryId: number }
@@ -187,6 +189,7 @@ const buyerMenu = [
   "Інструкції з експлуатації",
   "Сервісні центри",
 ];
+
 interface HeaderProps {
   openPromotionsPage?: () => void;
 
@@ -196,16 +199,16 @@ interface HeaderProps {
     categoryId?: number
   ) => void;
 }
+
 const Header = ({
   openPromotionsPage,
   openSearchCategory,
-  
 }: HeaderProps) => {
- const [isCartOpen, setIsCartOpen] = useState(false);
-const [isOrdersOpen, setIsOrdersOpen] = useState(false);
-const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
-const [isCompareOpen, setIsCompareOpen] = useState(false);
-const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isOrdersOpen, setIsOrdersOpen] = useState(false);
+  const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
   const [showAuth, setShowAuth] = useState(false);
@@ -226,11 +229,11 @@ const [isAdminOpen, setIsAdminOpen] = useState(false);
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/auth/me`, {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-});
+      const response = await fetch(authUrl("/auth/me"), {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         setIsAdmin(false);
@@ -244,13 +247,13 @@ const [isAdminOpen, setIsAdminOpen] = useState(false);
       const emailFromUser = String(user.email || "").trim().toLowerCase();
       setUserEmail(emailFromUser);
 
-const role = String(user.role).toLowerCase();
+      const role = String(user.role).toLowerCase();
 
-if (role === "admin") {
-  setIsAdmin(true);
-} else {
-  setIsAdmin(false);
-}
+      if (role === "admin") {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
 
       const savedAvatar = emailFromUser
         ? localStorage.getItem(`avatar:${emailFromUser}`)
@@ -284,8 +287,6 @@ if (role === "admin") {
       window.removeEventListener("storage", updateAvatar);
     };
   }, []);
-
-  
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -324,7 +325,8 @@ if (role === "admin") {
       return;
     }
 
-    const token = localStorage.getItem("access_token") || localStorage.getItem("token");
+    const token =
+      localStorage.getItem("access_token") || localStorage.getItem("token");
 
     if (!token) {
       showNotification("Спочатку увійдіть в акаунт", "warning");
@@ -335,7 +337,7 @@ if (role === "admin") {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await fetch(`${BASE_URL}/auth/me/avatar`, {
+      const response = await fetch(authUrl("/auth/me/avatar"), {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -374,17 +376,19 @@ if (role === "admin") {
     <>
       <header className="header">
         <nav className="header-menu">
-	         <button onClick={() => openHeaderSearch("Ноутбуки", "", 1)}>
-  Ноутбуки
-</button>
+          <button onClick={() => openHeaderSearch("Ноутбуки", "", 1)}>
+            Ноутбуки
+          </button>
 
-	          <button onClick={() => openHeaderSearch("Планшети", "", 2)}>
-  Планшети
-</button>
+          <button onClick={() => openHeaderSearch("Планшети", "", 2)}>
+            Планшети
+          </button>
 
-	          <button onClick={() => openHeaderSearch("Смартфони Motorola", "", 3)}>
-  Смартфони Motorola
-</button>
+          <button
+            onClick={() => openHeaderSearch("Смартфони Motorola", "", 3)}
+          >
+            Смартфони Motorola
+          </button>
 
           <div className="header-dropdown">
             <button>
@@ -393,21 +397,21 @@ if (role === "admin") {
 
             <div className="header-dropdown-menu large">
               {accessories.map((item) => (
-  <button
-    key={item}
-    onClick={() => {
-  const search = accessoriesSearchMap[item];
+                <button
+                  key={item}
+                  onClick={() => {
+                    const search = accessoriesSearchMap[item];
 
-  openSearchCategory?.(
-    item,
-    search?.keyword || "",
-    search?.categoryId
-  );
-}}
-  >
-    {item}
-  </button>
-))}
+                    openSearchCategory?.(
+                      item,
+                      search?.keyword || "",
+                      search?.categoryId
+                    );
+                  }}
+                >
+                  {item}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -418,32 +422,32 @@ if (role === "admin") {
 
             <div className="header-dropdown-menu">
               {otherProducts.map((item) => (
-  <button
-    key={item}
-    onClick={() => {
-      const search = otherProductsSearchMap[item];
+                <button
+                  key={item}
+                  onClick={() => {
+                    const search = otherProductsSearchMap[item];
 
-      openSearchCategory?.(
-        search?.title || item,
-        search?.keyword || "",
-        search?.categoryId
-      );
-    }}
-  >
-    {item}
-  </button>
-))}
+                    openSearchCategory?.(
+                      search?.title || item,
+                      search?.keyword || "",
+                      search?.categoryId
+                    );
+                  }}
+                >
+                  {item}
+                </button>
+              ))}
             </div>
           </div>
 
           <button
-  className="portal-btn"
-  onClick={() => {
-    window.open("https://lenovo.ua/", "_blank");
-  }}
->
-  Портал
-</button>
+            className="portal-btn"
+            onClick={() => {
+              window.open("https://lenovo.ua/", "_blank");
+            }}
+          >
+            Портал
+          </button>
         </nav>
 
         <div className="header-actions">
@@ -454,72 +458,64 @@ if (role === "admin") {
 
             <div className="header-dropdown-menu buyer-menu">
               {buyerMenu.map((item) => (
-  <button
-    key={item}
-    onClick={() => {
+                <button
+                  key={item}
+                  onClick={() => {
+                    if (item === "Акції") {
+                      openPromotionsPage?.();
+                    }
 
-      if (item === "Акції") {
-        openPromotionsPage?.();
-      }
+                    if (item === "Trade-in планшетів") {
+                      window.open("https://shop.lenovo.ua/tradein_tabs", "_blank");
+                    }
 
-      if (item === "Trade-in планшетів") {
-        window.open(
-          "https://shop.lenovo.ua/tradein_tabs",
-          "_blank"
-        );
-      }
+                    if (item === "Для бізнесу") {
+                      window.open("https://shop.lenovo.ua/smb", "_blank");
+                    }
 
-      if (item === "Для бізнесу") {
-        window.open(
-          "https://shop.lenovo.ua/smb",
-          "_blank"
-        );
-      }
+                    if (item === "Бонусна програма") {
+                      window.open(
+                        "https://shop.lenovo.ua/bonus-program",
+                        "_blank"
+                      );
+                    }
 
-      if (item === "Бонусна програма") {
-        window.open(
-          "https://shop.lenovo.ua/bonus-program",
-          "_blank"
-        );
-      }
+                    if (item === "Додаткові Сервіси") {
+                      window.open("https://lenovo.ua/lp/services", "_blank");
+                    }
 
-      if (item === "Додаткові Сервіси") {
-        window.open(
-          "https://lenovo.ua/lp/services",
-          "_blank"
-        );
-      }
+                    if (item === "Форум підтримки") {
+                      window.open(
+                        "https://forums.lenovo.com/t5/One-Language-Community/ct-p/Community-OLC",
+                        "_blank"
+                      );
+                    }
 
-      if (item === "Форум підтримки") {
-        window.open(
-          "https://forums.lenovo.com/t5/One-Language-Community/ct-p/Community-OLC",
-          "_blank"
-        );
-      }
+                    if (item === "Інструкції з експлуатації") {
+                      window.open(
+                        "https://support.lenovo.com/ua/uk?tabName=Manuals",
+                        "_blank"
+                      );
+                    }
 
-      if (item === "Інструкції з експлуатації") {
-        window.open(
-          "https://support.lenovo.com/ua/uk?tabName=Manuals",
-          "_blank"
-        );
-      }
-
-      if (item === "Сервісні центри") {
-        window.open(
-          "https://service.lenovo.ua/uk/service-centers",
-          "_blank"
-        );
-      }
-
-    }}
-  >
-    {item}
-  </button>
-))}
+                    if (item === "Сервісні центри") {
+                      window.open(
+                        "https://service.lenovo.ua/uk/service-centers",
+                        "_blank"
+                      );
+                    }
+                  }}
+                >
+                  {item}
+                </button>
+              ))}
             </div>
           </div>
 
-          <button className="header-icon-btn" onClick={() => setShowSearch(true)}>
+          <button
+            className="header-icon-btn"
+            onClick={() => setShowSearch(true)}
+          >
             <SearchIcon />
           </button>
 
@@ -560,52 +556,51 @@ if (role === "admin") {
                       </div>
                     </div>
 
-                   {!isAdmin && (
-  <>
-    <button
-  onClick={() => {
-    setIsOrdersOpen(true);
-    setShowProfileMenu(false);
-  }}
->
-  <InventoryIcon />
-  Мої замовлення
-</button>
+                    {!isAdmin && (
+                      <>
+                        <button
+                          onClick={() => {
+                            setIsOrdersOpen(true);
+                            setShowProfileMenu(false);
+                          }}
+                        >
+                          <InventoryIcon />
+                          Мої замовлення
+                        </button>
 
-    <button
-      className="profile-menu-item cart-link"
-      onClick={() => {
-        setIsCartOpen(true);
-        setShowProfileMenu(false);
-      }}
-    >
-      🛒 Кошик
-    </button>
+                        <button
+                          className="profile-menu-item cart-link"
+                          onClick={() => {
+                            setIsCartOpen(true);
+                            setShowProfileMenu(false);
+                          }}
+                        >
+                          🛒 Кошик
+                        </button>
 
-    <button
-      className="profile-menu-item"
-      onClick={() => {
-        setIsFavoritesOpen(true);
-        setShowProfileMenu(false);
-      }}
-    >
-      <FavoriteBorderIcon />
-      Обране
-    </button>
+                        <button
+                          className="profile-menu-item"
+                          onClick={() => {
+                            setIsFavoritesOpen(true);
+                            setShowProfileMenu(false);
+                          }}
+                        >
+                          <FavoriteBorderIcon />
+                          Обране
+                        </button>
 
-    <button
-      className="profile-menu-item"
-      onClick={() => {
-        setIsCompareOpen(true);
-        setShowProfileMenu(false);
-      }}
-    >
-      <BalanceIcon />
-      Порівняння
-    </button>
-    
-  </>
-)}
+                        <button
+                          className="profile-menu-item"
+                          onClick={() => {
+                            setIsCompareOpen(true);
+                            setShowProfileMenu(false);
+                          }}
+                        >
+                          <BalanceIcon />
+                          Порівняння
+                        </button>
+                      </>
+                    )}
 
                     {isAdmin && (
                       <button
@@ -628,28 +623,20 @@ if (role === "admin") {
               </>
             )}
           </div>
-
-         
         </div>
 
-       {isCartOpen && <Cart close={() => setIsCartOpen(false)} />}
+        {isCartOpen && <Cart close={() => setIsCartOpen(false)} />}
 
-{isOrdersOpen && (
-  <MyOrders close={() => setIsOrdersOpen(false)} />
-)}
+        {isOrdersOpen && <MyOrders close={() => setIsOrdersOpen(false)} />}
 
-{isFavoritesOpen && (
-  <FavoritesPanel close={() => setIsFavoritesOpen(false)} />
-)}
+        {isFavoritesOpen && (
+          <FavoritesPanel close={() => setIsFavoritesOpen(false)} />
+        )}
 
-{isCompareOpen && (
-  <ComparePanel close={() => setIsCompareOpen(false)} />
-)}
+        {isCompareOpen && <ComparePanel close={() => setIsCompareOpen(false)} />}
       </header>
 
-     {isAdminOpen && (
-  <AdminPanel close={() => setIsAdminOpen(false)} />
-)}
+      {isAdminOpen && <AdminPanel close={() => setIsAdminOpen(false)} />}
 
       {showAuth && (
         <AuthModal

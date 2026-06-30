@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { BASE_URL } from "../../config";
+import { authUrl } from "../../config";
 import { showNotification } from "../../utils/notifications";
 import "./AuthModal.css";
 
@@ -62,7 +62,7 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
     }
   };
 
-  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
     if (!file) return;
@@ -105,14 +105,17 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
     setAvatarFileName("");
   };
 
-  const saveLoginData = async (token: string, optionalAvatarFile?: File | null) => {
+  const saveLoginData = async (
+    token: string,
+    optionalAvatarFile?: File | null
+  ) => {
     localStorage.setItem("token", token);
     localStorage.setItem("access_token", token);
 
     let user: UserResponse | null = null;
 
     try {
-      const meResponse = await fetch(`${BASE_URL}/auth/me`, {
+      const meResponse = await fetch(authUrl("/auth/me"), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -143,7 +146,7 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await fetch(`${BASE_URL}/auth/me/avatar`, {
+      const response = await fetch(authUrl("/auth/me/avatar"), {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -155,7 +158,10 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
 
       if (!response.ok) {
         showNotification(
-          getAuthErrorMessage(data, "Аватар не вдалося завантажити, але акаунт створено"),
+          getAuthErrorMessage(
+            data,
+            "Аватар не вдалося завантажити, але акаунт створено"
+          ),
           "warning"
         );
         return null;
@@ -164,13 +170,16 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
       return data as UserResponse;
     } catch (error) {
       console.error("AVATAR UPLOAD ERROR:", error);
-      showNotification("Аватар не вдалося завантажити, але акаунт створено", "warning");
+      showNotification(
+        "Аватар не вдалося завантажити, але акаунт створено",
+        "warning"
+      );
       return null;
     }
   };
 
   const loginAfterVerification = async () => {
-    const response = await fetch(`${BASE_URL}/auth/login`, {
+    const response = await fetch(authUrl("/auth/login"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -185,7 +194,10 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
 
     if (!response.ok) {
       showNotification(
-        getAuthErrorMessage(data, "Email підтверджено. Тепер увійдіть у акаунт."),
+        getAuthErrorMessage(
+          data,
+          "Email підтверджено. Тепер увійдіть у акаунт."
+        ),
         "warning"
       );
       setStep("form");
@@ -200,7 +212,7 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
   };
 
   const submitLogin = async () => {
-    const response = await fetch(`${BASE_URL}/auth/login`, {
+    const response = await fetch(authUrl("/auth/login"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -231,7 +243,7 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
   };
 
   const requestVerificationCode = async () => {
-    const response = await fetch(`${BASE_URL}/auth/resend-verification-code`, {
+    const response = await fetch(authUrl("/auth/resend-verification-code"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -254,7 +266,7 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
   };
 
   const submitRegister = async () => {
-    const response = await fetch(`${BASE_URL}/auth/register`, {
+    const response = await fetch(authUrl("/auth/register"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -290,7 +302,8 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
           const resendMessage = await requestVerificationCode();
           showNotification(resendMessage, "success");
         } catch (error: any) {
-          const errorMessage = error?.message || "Не вдалося відправити новий код";
+          const errorMessage =
+            error?.message || "Не вдалося відправити новий код";
           const lowerErrorMessage = errorMessage.toLowerCase();
 
           if (
@@ -362,7 +375,7 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${BASE_URL}/auth/verify-email`, {
+      const response = await fetch(authUrl("/auth/verify-email"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -403,7 +416,9 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
     } catch (error: any) {
       console.error("RESEND CODE ERROR:", error);
       showNotification(
-        `${error?.message || "Не вдалося відправити код"}. Перевірте папку «Спам» або налаштування SMTP на бекенді.`,
+        `${
+          error?.message || "Не вдалося відправити код"
+        }. Перевірте папку «Спам» або налаштування SMTP на бекенді.`,
         "error"
       );
     } finally {
@@ -424,28 +439,42 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
 
             <p>
               Ми відправили код підтвердження на <b>{normalizedEmail}</b>.
-              Саме сюди потрібно вставити 6 цифр з листа, щоб завершити реєстрацію.
+              Саме сюди потрібно вставити 6 цифр з листа, щоб завершити
+              реєстрацію.
             </p>
 
             <div className="verify-help">
-              Якщо лист не прийшов одразу — перевірте папку «Спам» і зачекайте 1–2 хвилини.
-              Якщо користувач уже був створений раніше, натисніть кнопку «Надіслати код ще раз».
+              Якщо лист не прийшов одразу — перевірте папку «Спам» і зачекайте
+              1–2 хвилини. Якщо користувач уже був створений раніше, натисніть
+              кнопку «Надіслати код ще раз».
             </div>
 
             <label>Код підтвердження</label>
             <input
               value={verificationCode}
-              onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              onChange={(e) =>
+                setVerificationCode(
+                  e.target.value.replace(/\D/g, "").slice(0, 6)
+                )
+              }
               placeholder="123456"
               inputMode="numeric"
               maxLength={6}
             />
 
-            <button className="auth-submit" onClick={verifyEmail} disabled={isLoading}>
+            <button
+              className="auth-submit"
+              onClick={verifyEmail}
+              disabled={isLoading}
+            >
               {isLoading ? "Перевіряємо..." : "Підтвердити email"}
             </button>
 
-            <button className="auth-secondary" onClick={resendCode} disabled={isLoading}>
+            <button
+              className="auth-secondary"
+              onClick={resendCode}
+              disabled={isLoading}
+            >
               Відправити код ще раз
             </button>
 
@@ -531,7 +560,10 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
                     disabled={isLoading}
                   />
 
-                  <label className="avatar-upload-button" htmlFor="register-avatar">
+                  <label
+                    className="avatar-upload-button"
+                    htmlFor="register-avatar"
+                  >
                     Обрати з компʼютера
                   </label>
 
@@ -542,9 +574,16 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
 
                 {avatarPreview && (
                   <div className="avatar-preview-box">
-                    <img src={avatarPreview} alt="Попередній перегляд аватара" />
+                    <img
+                      src={avatarPreview}
+                      alt="Попередній перегляд аватара"
+                    />
 
-                    <button type="button" onClick={clearAvatar} disabled={isLoading}>
+                    <button
+                      type="button"
+                      onClick={clearAvatar}
+                      disabled={isLoading}
+                    >
                       Видалити
                     </button>
                   </div>
@@ -552,15 +591,17 @@ const AuthModal = ({ close, onLoginSuccess }: Props) => {
               </div>
             )}
 
-            <button className="auth-submit" onClick={submit} disabled={isLoading}>
+            <button
+              className="auth-submit"
+              onClick={submit}
+              disabled={isLoading}
+            >
               {isLoading
                 ? "Зачекайте..."
                 : tab === "login"
                   ? "Увійти"
                   : "Зареєструватися"}
             </button>
-
-            
           </>
         )}
       </div>

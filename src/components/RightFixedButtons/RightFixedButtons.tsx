@@ -1,7 +1,7 @@
 import { useState } from "react";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import ChatIcon from "@mui/icons-material/Chat";
-import { BASE_URL } from "../../config";
+import { salesUrl } from "../../config";
 import { showNotification } from "../../utils/notifications";
 import "./RightFixedButtons.css";
 
@@ -38,7 +38,7 @@ const RightFixedButtons = () => {
     setIsSending(true);
 
     try {
-      const response = await fetch(`${BASE_URL}/client/contact-messages`, {
+      const response = await fetch(`${salesUrl}/client/contact-messages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

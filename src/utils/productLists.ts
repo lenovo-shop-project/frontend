@@ -1,4 +1,4 @@
-import { BASE_URL } from "../config";
+import { authUrl, catalogUrl } from "../config";
 import { showNotification } from "./notifications";
 
 export const FAVORITES_STORAGE_KEY = "favorite_products";
@@ -55,9 +55,16 @@ const getToken = () => {
   return localStorage.getItem("access_token") || localStorage.getItem("token");
 };
 
-const authHeaders = () => {
+const authHeaders = (): Record<string, string> => {
   const token = getToken();
-  return token ? { Authorization: `Bearer ${token}` } : {};
+
+  if (!token) {
+    return {};
+  }
+
+  return {
+    Authorization: `Bearer ${token}`,
+  };
 };
 
 const getErrorMessage = (data: any, fallback: string) => {
@@ -160,7 +167,7 @@ export const loadFavoriteProducts = async () => {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/client/favorites`, {
+    const response = await fetch(catalogUrl("/client/favorites"), {
       headers: authHeaders(),
     });
 
@@ -197,7 +204,7 @@ export const toggleFavoriteProduct = async (product: StoredProduct) => {
   }
 
   const isAlreadyFavorite = isProductInList(FAVORITES_STORAGE_KEY, product.id);
-  const url = `${BASE_URL}/client/favorites/${product.id}`;
+  const url = catalogUrl(`/client/favorites/${product.id}`);
 
   try {
     const response = await fetch(url, {
@@ -240,7 +247,7 @@ export const removeFavoriteProduct = async (productId: number) => {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/client/favorites/${productId}`, {
+    const response = await fetch(catalogUrl(`/client/favorites/${productId}`), {
       method: "DELETE",
       headers: authHeaders(),
     });
@@ -271,7 +278,7 @@ const checkCanAddToCart = async (product: StoredProduct) => {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/auth/me`, {
+    const response = await fetch(authUrl("/auth/me"), {
       headers: authHeaders(),
     });
 

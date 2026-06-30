@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ProductCard from "../ProductCard/ProductCard";
 import type { Product } from "../ProductCard/ProductCard";
 import "./ProductGrid.css";
-import { BASE_URL } from "../../config";
+import { catalogUrl } from "../../config";
 import ProductDetails from "../ProductDetails/ProductDetails";
 type FilterType = "default" | "tablet" | "motorola" | "simple";
 
@@ -50,7 +50,7 @@ const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [maxPrice, setMaxPrice] = useState("");
 
   useEffect(() => {
-    fetch(`${BASE_URL}/client/products`)
+    fetch(catalogUrl("/client/products"))
       .then((res) => {
         if (!res.ok) {
           throw new Error("Ошибка при получении данных с сервера");

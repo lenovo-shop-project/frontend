@@ -1,7 +1,7 @@
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
-import { BASE_URL } from "../../config";
+import { catalogUrl } from "../../config";
 import "./SearchOverlay.css";
 
 interface Props {
@@ -26,7 +26,7 @@ const SearchOverlay = ({ close }: Props) => {
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/client/products`);
+      const response = await fetch(`${catalogUrl}/client/products`);
 
       if (!response.ok) {
         throw new Error("Помилка пошуку");

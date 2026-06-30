@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../../config";
+import { authUrl, catalogUrl, salesUrl } from "../../config";
 import { showConfirm, showNotification } from "../../utils/notifications";
 import {
   fileToDataUrl,
@@ -306,7 +306,7 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
   };
 
   const loadProducts = async () => {
-    const response = await fetch(`${BASE_URL}/admin/products`, {
+    const response = await fetch(catalogUrl("/admin/products"), {
       headers: authHeaders,
     });
 
@@ -320,7 +320,7 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
   };
 
   const loadCategories = async () => {
-    const response = await fetch(`${BASE_URL}/admin/categories`, {
+    const response = await fetch(catalogUrl("/admin/categories"), {
       headers: authHeaders,
     });
 
@@ -338,7 +338,7 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
   };
 
   const loadUsers = async () => {
-    const response = await fetch(`${BASE_URL}/admin/users`, {
+    const response = await fetch(authUrl("/admin/users"), {
       headers: authHeaders,
     });
 
@@ -365,7 +365,7 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
   };
 
   const loadOrders = async () => {
-    const response = await fetch(`${BASE_URL}/admin/orders`, {
+    const response = await fetch(salesUrl("/admin/orders"), {
       headers: authHeaders,
     });
 
@@ -402,7 +402,7 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
   };
 
   const loadReviews = async () => {
-    const response = await fetch(`${BASE_URL}/admin/reviews`, {
+    const response = await fetch(catalogUrl("/admin/reviews"), {
       headers: authHeaders,
     });
 
@@ -436,8 +436,8 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
   const loadContacts = async () => {
     try {
       const [messagesResponse, phonesResponse] = await Promise.all([
-        fetch(`${BASE_URL}/admin/contact-messages`, { headers: authHeaders }),
-        fetch(`${BASE_URL}/admin/phone-requests`, { headers: authHeaders }),
+        fetch(salesUrl("/admin/contact-messages"), { headers: authHeaders }),
+        fetch(salesUrl("/admin/phone-requests"), { headers: authHeaders }),
       ]);
 
       const messagesData = messagesResponse.ok
@@ -530,7 +530,7 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
     setIsProductImageUploading(true);
 
     try {
-      const response = await fetch(`${BASE_URL}/admin/uploads/products`, {
+      const response = await fetch(catalogUrl("/admin/uploads/products"), {
         method: "POST",
         headers: authHeaders,
         body: formData,
@@ -579,8 +579,8 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
     };
 
     const url = editingId
-      ? `${BASE_URL}/admin/products/${editingId}`
-      : `${BASE_URL}/admin/products`;
+  ? catalogUrl(`/admin/products/${editingId}`)
+  : catalogUrl("/admin/products");
 
     const method = editingId ? "PATCH" : "POST";
 
@@ -621,8 +621,8 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
 
   const toggleProduct = async (product: Product) => {
     const url = product.is_available
-      ? `${BASE_URL}/admin/products/${product.id}/deactivate`
-      : `${BASE_URL}/admin/products/${product.id}/activate`;
+      ? catalogUrl(`/admin/products/${product.id}/deactivate`)
+: catalogUrl(`/admin/products/${product.id}/activate`);
 
     const response = await fetch(url, {
       method: "PATCH",
@@ -647,7 +647,7 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
       return;
     }
 
-    const response = await fetch(`${BASE_URL}/admin/categories`, {
+    const response = await fetch(catalogUrl("/admin/categories"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -682,7 +682,7 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
       localStatuses[orderId] === "paid";
 
     const sendStatus = async (newStatus: string) => {
-      return await fetch(`${BASE_URL}/admin/orders/${orderId}/status`, {
+      return await fetch(salesUrl(`/admin/orders/${orderId}/status`), {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -741,7 +741,7 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
 
     if (!confirmDelete) return;
 
-    const response = await fetch(`${BASE_URL}/admin/reviews/${reviewId}`, {
+    const response = await fetch(catalogUrl(`/admin/reviews/${reviewId}`), {
       method: "DELETE",
       headers: authHeaders,
     });
@@ -767,7 +767,7 @@ const AdminPanel = ({ close }: AdminPanelProps) => {
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/admin/reviews/${reviewId}/response`, {
+      const response = await fetch(catalogUrl(`/admin/reviews/${reviewId}/response`), {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

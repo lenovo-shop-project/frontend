@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
-import { BASE_URL } from "../../config";
+import { salesUrl } from "../../config";
 import { showNotification } from "../../utils/notifications";
 import "./LeftBanner.css";
 
@@ -30,7 +30,7 @@ const LeftBanner = () => {
     setIsSending(true);
 
     try {
-      const response = await fetch(`${BASE_URL}/client/phone-requests`, {
+      const response = await fetch(`${salesUrl}/client/phone-requests`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
