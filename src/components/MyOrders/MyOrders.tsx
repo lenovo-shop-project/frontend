@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../../config";
+import { salesUrl } from "../../config";
 import { showConfirm, showNotification } from "../../utils/notifications";
 import "./MyOrders.css";
 
@@ -58,7 +58,7 @@ const MyOrders = ({ close }: MyOrdersProps) => {
       localStorage.getItem("access_token") ||
       localStorage.getItem("token");
 
-    const response = await fetch(`${BASE_URL}/client/orders`, {
+    const response = await fetch(`${salesUrl}/client/orders`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -133,7 +133,7 @@ const MyOrders = ({ close }: MyOrdersProps) => {
       localStorage.getItem("token");
 
     const response = await fetch(
-      `${BASE_URL}/client/orders/${orderId}/cancel`,
+      `${salesUrl}/client/orders/${orderId}/cancel`,
       {
         method: "PATCH",
         headers: {

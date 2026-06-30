@@ -1,3 +1,5 @@
+import { catalogUrl } from "../config";
+
 export const SITE_CONTENT_CHANGED_EVENT = "site-content-changed";
 export const SITE_BANNERS_STORAGE_KEY = "admin_site_banners";
 export const SITE_PROMOTIONS_STORAGE_KEY = "admin_site_promotions";
@@ -160,18 +162,26 @@ export const fileToDataUrl = (file: File): Promise<string> => {
     reader.readAsDataURL(file);
   });
 };
-import { BASE_URL } from "../config";
 
 const getToken = () => {
   return localStorage.getItem("access_token") || localStorage.getItem("token");
 };
 
-const getAuthHeaders = () => {
+const getAuthHeaders = (): Record<string, string> => {
   const token = getToken();
-  return token ? { Authorization: `Bearer ${token}` } : {};
+
+  if (!token) {
+    return {};
+  }
+
+  return {
+    Authorization: `Bearer ${token}`,
+  };
 };
 
-export const backendCatalogBannerToSiteBanner = (banner: any): SiteBanner | null => {
+export const backendCatalogBannerToSiteBanner = (
+  banner: any
+): SiteBanner | null => {
   if (!banner?.image_url) return null;
 
   return {
@@ -185,7 +195,7 @@ export const backendCatalogBannerToSiteBanner = (banner: any): SiteBanner | null
 
 export const fetchBackendCatalogBanner = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/client/catalog-banner`);
+    const response = await fetch(catalogUrl("/client/catalog-banner"));
 
     if (!response.ok) return null;
 
@@ -204,7 +214,7 @@ export const uploadAdminImage = async (
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await fetch(`${BASE_URL}${endpoint}`, {
+  const response = await fetch(catalogUrl(endpoint), {
     method: "POST",
     headers: getAuthHeaders(),
     body: formData,
@@ -220,7 +230,7 @@ export const uploadAdminImage = async (
 };
 
 export const saveCatalogBannerToBackend = async (banner: SiteBanner) => {
-  const response = await fetch(`${BASE_URL}/admin/catalog-banner`, {
+  const response = await fetch(catalogUrl("/admin/catalog-banner"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

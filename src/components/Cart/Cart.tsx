@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../../config";
+import { authUrl, salesUrl } from "../../config";
 import { showNotification } from "../../utils/notifications";
 import "./Cart.css";
 
@@ -81,7 +81,7 @@ const Cart = ({ close }: CartProps) => {
     try {
       setIsEmailLoading(true);
 
-      const response = await fetch(`${BASE_URL}/auth/me`, {
+      const response = await fetch(authUrl("/auth/me"), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -128,7 +128,10 @@ const Cart = ({ close }: CartProps) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   };
 
-  const saveOrderContactEmail = (orderId: number | string | undefined, email: string) => {
+  const saveOrderContactEmail = (
+    orderId: number | string | undefined,
+    email: string
+  ) => {
     if (!orderId || !email.trim()) return;
 
     try {
@@ -148,7 +151,7 @@ const Cart = ({ close }: CartProps) => {
   };
 
   const createOrderRequest = async (body: object, token: string) => {
-    const response = await fetch(`${BASE_URL}/client/orders`, {
+    const response = await fetch(salesUrl("/client/orders"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -201,7 +204,10 @@ const Cart = ({ close }: CartProps) => {
           "Backend does not accept contact_email yet. Retrying order without extra email field."
         );
 
-        ({ response, data } = await createOrderRequest({ items: orderItems }, token));
+        ({ response, data } = await createOrderRequest(
+          { items: orderItems },
+          token
+        ));
       }
 
       console.log("CREATE ORDER RESPONSE:", data);
@@ -306,7 +312,7 @@ const Cart = ({ close }: CartProps) => {
 
             <p>
               Введіть актуальний email для уточнення доставки, оплати або
-              наявності товару. 
+              наявності товару.
             </p>
 
             <label>Email для звʼязку</label>
@@ -319,7 +325,9 @@ const Cart = ({ close }: CartProps) => {
             />
 
             {isEmailLoading && (
-              <span className="order-email-loading">Підставляємо email з акаунта...</span>
+              <span className="order-email-loading">
+                Підставляємо email з акаунта...
+              </span>
             )}
 
             <div className="order-modal-total">

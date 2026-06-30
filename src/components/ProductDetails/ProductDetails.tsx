@@ -3,7 +3,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import BalanceIcon from "@mui/icons-material/Balance";
 import "./ProductDetails.css";
-import { BASE_URL } from "../../config";
+import { authUrl, catalogUrl } from "../../config";
 import { showConfirm, showNotification } from "../../utils/notifications";
 import {
   COMPARE_STORAGE_KEY,
@@ -94,7 +94,7 @@ const ProductDetails = ({ product, close }: Props) => {
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/auth/me`, {
+      const response = await fetch(authUrl("/auth/me"), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -115,7 +115,9 @@ const ProductDetails = ({ product, close }: Props) => {
 
   const loadReviews = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/client/products/${product.id}/reviews`);
+      const response = await fetch(
+        catalogUrl(`/client/products/${product.id}/reviews`)
+      );
 
       if (!response.ok) {
         console.log("REVIEWS LOAD ERROR:", response.status);
@@ -216,7 +218,6 @@ const ProductDetails = ({ product, close }: Props) => {
     );
   };
 
-
   const checkCanAddToCart = async () => {
     const token = getToken();
 
@@ -226,7 +227,7 @@ const ProductDetails = ({ product, close }: Props) => {
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/auth/me`, {
+      const response = await fetch(authUrl("/auth/me"), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -336,18 +337,21 @@ const ProductDetails = ({ product, close }: Props) => {
       return;
     }
 
-    const response = await fetch(`${BASE_URL}/client/products/${product.id}/reviews`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        rating: reviewRating,
-        text: reviewText,
-        comment: reviewText,
-      }),
-    });
+    const response = await fetch(
+      catalogUrl(`/client/products/${product.id}/reviews`),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          rating: reviewRating,
+          text: reviewText,
+          comment: reviewText,
+        }),
+      }
+    );
 
     const data = await response.json().catch(() => null);
 
@@ -396,7 +400,7 @@ const ProductDetails = ({ product, close }: Props) => {
       return;
     }
 
-    const response = await fetch(`${BASE_URL}/client/reviews/${reviewId}`, {
+    const response = await fetch(catalogUrl(`/client/reviews/${reviewId}`), {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -439,7 +443,7 @@ const ProductDetails = ({ product, close }: Props) => {
 
     if (!confirmed) return;
 
-    const response = await fetch(`${BASE_URL}/client/reviews/${reviewId}`, {
+    const response = await fetch(catalogUrl(`/client/reviews/${reviewId}`), {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -545,8 +549,6 @@ const ProductDetails = ({ product, close }: Props) => {
               <button className="details-buy-btn" onClick={addToCart}>
                 🛒 Купити
               </button>
-
-             
 
               <button className="details-credit-btn" onClick={addCreditToCart}>
                 В кредит від {formatPrice(creditMonthlyPayment)} ₴/міс
