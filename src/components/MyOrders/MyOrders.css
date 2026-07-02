@@ -118,9 +118,49 @@
 
 .order-item {
   display: grid;
-  grid-template-columns: 1fr 90px 120px;
+  grid-template-columns: minmax(0, 1fr) 90px 120px;
+  align-items: center;
   gap: 12px;
-  padding: 8px 0;
+  padding: 10px 0;
+}
+
+.order-product {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.order-product-image,
+.order-product-placeholder {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: 1px solid #eeeeee;
+  background: #ffffff;
+}
+
+.order-product-image {
+  object-fit: contain;
+}
+
+.order-product-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  box-sizing: border-box;
+  background: #f5f5f5;
+  color: #888888;
+  font-size: 10px;
+  text-align: center;
+}
+
+.order-product-name {
+  min-width: 0;
+  font-weight: 600;
+  line-height: 1.35;
 }
 
 .order-no-items {
@@ -157,4 +197,17 @@
     grid-template-columns: 1fr;
     flex-direction: column;
   }
+  @media (max-width: 900px) {
+  .orders-window {
+    width: 90%;
+  }
+
+  .order-card-top {
+    flex-direction: column;
+  }
+
+  .order-item {
+    grid-template-columns: 1fr;
+  }
+}
 }

@@ -38,7 +38,7 @@ const RightFixedButtons = () => {
     setIsSending(true);
 
     try {
-      const response = await fetch(`${salesUrl}/client/contact-messages`, {
+      const response = await fetch(salesUrl("/client/contact-messages"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
