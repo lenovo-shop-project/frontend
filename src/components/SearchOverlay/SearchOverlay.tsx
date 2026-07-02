@@ -26,7 +26,9 @@ const SearchOverlay = ({ close }: Props) => {
     }
 
     try {
-      const response = await fetch(`${catalogUrl}/client/products`);
+      const response = await fetch(
+  catalogUrl("/client/products")
+);
 
       if (!response.ok) {
         throw new Error("Помилка пошуку");

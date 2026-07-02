@@ -30,7 +30,7 @@ const LeftBanner = () => {
     setIsSending(true);
 
     try {
-      const response = await fetch(`${salesUrl}/client/phone-requests`, {
+      const response = await fetch(salesUrl("/client/phone-requests"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
